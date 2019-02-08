@@ -8,16 +8,16 @@ using UnityEngine.UI;
 //using Assets;
 public class getScores : MonoBehaviour
 {
-
-string API_KEY = "2oRiTkq1ZrBIqNFzU7tVqFELzCpu_J0H";
+    private int size;
+    string API_KEY = "2oRiTkq1ZrBIqNFzU7tVqFELzCpu_J0H";
     public int offset = 0;
     public int peopleIndex = 0;
     struct person {
         public string name;
         public string score;
     }
-
     person[] people = new person[1000];
+    //person[] people = new person[1000];
     // Start is called before the first frame update
     void Start()
     {
@@ -26,16 +26,49 @@ string API_KEY = "2oRiTkq1ZrBIqNFzU7tVqFELzCpu_J0H";
         HttpWebResponse response = (HttpWebResponse)request.GetResponse();
         StreamReader reader = new StreamReader(response.GetResponseStream());
         string jsonResponse = reader.ReadToEnd();
+
+        //Get the amount of people there are in the database and resize the array accordingly
+        getSize(jsonResponse);
+        Array.Resize(ref people, size);
+
+        //Parse scores into the person array
         parseScores(jsonResponse);
-        //printPeople();
+
+        //Display current 10 scores
         displayTenScores();
     }
-
+    
+    
+    /// <summary>
+    /// A debugging function that prints each person in the people array and their scores
+    /// </summary>
     public void printPeople() {
         for (int i = 0; i < 100; i++) {
             Debug.Log("Person: " + people[i].name + " Score: " + people[i].score);
         }
     }
+
+
+    /// <summary>
+    /// Find amount of people, so that you can create a correctly sized array of person objects
+    /// </summary>
+    /// <param name="json"></param>
+    public void getSize(string json) {
+        size = 0;
+        string[] seperate = json.Split(',');
+        for (int i = 0; i < seperate.Length; i++) {
+            if (seperate[i].Contains("score")) {
+                size++;
+            }
+        }
+        Debug.Log(size);
+    }
+
+
+    /// <summary>
+    /// A function that takes the string'd version of a JSON object from the scores database, and parses it into the people array
+    /// </summary>
+    /// <param name="phrase"></param>
     public void parseScores(string phrase) {
         string[] words = phrase.Split(',');
         for (int i = 0; i < words.Length; i++)
@@ -63,30 +96,55 @@ string API_KEY = "2oRiTkq1ZrBIqNFzU7tVqFELzCpu_J0H";
         }
     }
 
+
+    /// <summary>
+    /// Retrieves the textbox of the highscores canvas and assigns correct values to the ranks, usernames, and scores
+    /// </summary>
     public void displayTenScores() {
         int e = 0;
         for (int i = offset; i < offset + 10; i++) {
             GameObject.Find("rank" + (e+1).ToString()).GetComponent<Text>().text = (e+1+offset).ToString();
-            GameObject.Find("name" + (e + 1).ToString()).GetComponent<Text>().text = people[e + offset].name;
-            GameObject.Find("score" + (e + 1).ToString()).GetComponent<Text>().text = people[e + offset].score;
+
+            //Check to make sure we're not on the last page and have exceeded the people array size
+            if (e + offset < size)
+            {
+                GameObject.Find("name" + (e + 1).ToString()).GetComponent<Text>().text = people[e + offset].name;
+                GameObject.Find("score" + (e + 1).ToString()).GetComponent<Text>().text = people[e + offset].score;
+            }
             e++;
         }
     }
 
+
+    /// <summary>
+    /// Initializes click events for the < and > buttons
+    /// </summary>
     public void click() {
         GameObject.Find("<").GetComponent<Button>().onClick.AddListener(leftArrowClick);
         GameObject.Find(">").GetComponent<Button>().onClick.AddListener(rightArrowClick);
     }
 
+
+    /// <summary>
+    /// click event for the < option. it reduces the offset by 10 and then calls display scores again to assign the text box values 
+    /// to the previous 10 scores of the people array
+    /// </summary>
     public void leftArrowClick() {
+        clearValues();
         if (!((offset - 10) < 0)) {
             offset -= 10;
         }
         displayTenScores();
     }
 
+
+    /// <summary>
+    /// click event for the > option. it reduces the offset by 10 and then calls display scores again to assign the text box values 
+    /// to the next 10 scores of the people array
+    /// </summary>
     public void rightArrowClick()
     {
+        clearValues();
         if (!(offset+10 > peopleIndex)) { 
             offset += 10;
         }
@@ -94,6 +152,19 @@ string API_KEY = "2oRiTkq1ZrBIqNFzU7tVqFELzCpu_J0H";
     }
 
 
+    /// <summary>
+    /// Clear the highscores of the previous 10 scores (for use on the last page, where not all of the scores will be rewritten)
+    /// </summary>
+    public void clearValues() {
+        int e = 0;
+        for (int i = offset; i < offset + 10; i++)
+        {
+            GameObject.Find("rank" + (e + 1).ToString()).GetComponent<Text>().text = (e + 1 + offset).ToString();
+            GameObject.Find("name" + (e + 1).ToString()).GetComponent<Text>().text = "";
+            GameObject.Find("score" + (e + 1).ToString()).GetComponent<Text>().text = "";
+            e++;
+        }
+    }
 
 
 }
