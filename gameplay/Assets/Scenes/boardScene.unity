@@ -226,7 +226,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pz: {x: 0, y: 0, z: 0}
-  terrain1Prefab: {fileID: 8182697667641048217, guid: 3bcd51a60ac297a4999cba540c10387a,
+  base1: {fileID: 5930014613799940433, guid: a3e3d71151427194bb04017c23ecfad3, type: 3}
+  terrain1: {fileID: 8182697667641048217, guid: 3bcd51a60ac297a4999cba540c10387a,
+    type: 3}
+  terrain2: {fileID: 3170017251700949577, guid: 0a8dfc66fa1c5f14d9af1c5b50c932c7,
+    type: 3}
+  terrain3: {fileID: 1408710064225956231, guid: 09d5ca95f4b0345478bc01536706a14d,
     type: 3}
   melee1: {fileID: 6385284349475645496, guid: 11c78d75470e9b546ba8981e51440304, type: 3}
   selectedUnit: {fileID: 0}
