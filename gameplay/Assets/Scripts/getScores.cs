@@ -8,6 +8,9 @@ using UnityEngine.UI;
 //using Assets;
 public class getScores : MonoBehaviour
 {
+
+    public GameObject playerEntryPrefab;
+
     private int size;
     string API_KEY = "2oRiTkq1ZrBIqNFzU7tVqFELzCpu_J0H";
     public int offset = 0;
@@ -102,16 +105,15 @@ public class getScores : MonoBehaviour
     /// </summary>
     public void displayTenScores() {
         int e = 0;
-        for (int i = offset; i < offset + 10; i++) {
-            GameObject.Find("rank" + (e+1).ToString()).GetComponent<Text>().text = (e+1+offset).ToString();
-
-            //Check to make sure we're not on the last page and have exceeded the people array size
-            if (e + offset < size)
-            {
-                GameObject.Find("name" + (e + 1).ToString()).GetComponent<Text>().text = people[e + offset].name;
-                GameObject.Find("score" + (e + 1).ToString()).GetComponent<Text>().text = people[e + offset].score;
-            }
-            e++;
+        for (int i = offset; i < offset + 10 && (e + offset) < people.Length; i++, e++) {
+            // create a new playerEntry prefab 
+            GameObject go = (GameObject)Instantiate(playerEntryPrefab);
+            // make it's parent this transform (player score list)
+            go.transform.SetParent(this.transform);
+            // add rank, username, and score to the player entry
+            go.transform.Find("Rank").GetComponent<Text>().text = (e+1+offset).ToString();
+            go.transform.Find("Username").GetComponent<Text>().text = people[e + offset].name;
+            go.transform.Find("Score").GetComponent<Text>().text = people[e + offset].score;
         }
     }
 
@@ -156,13 +158,9 @@ public class getScores : MonoBehaviour
     /// Clear the highscores of the previous 10 scores (for use on the last page, where not all of the scores will be rewritten)
     /// </summary>
     public void clearValues() {
-        int e = 0;
-        for (int i = offset; i < offset + 10; i++)
-        {
-            GameObject.Find("rank" + (e + 1).ToString()).GetComponent<Text>().text = (e + 1 + offset).ToString();
-            GameObject.Find("name" + (e + 1).ToString()).GetComponent<Text>().text = "";
-            GameObject.Find("score" + (e + 1).ToString()).GetComponent<Text>().text = "";
-            e++;
+        // remove the children of player score list
+        foreach (Transform child in transform) {
+            GameObject.Destroy(child.gameObject);
         }
     }
 
