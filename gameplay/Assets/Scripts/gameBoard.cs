@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using System;
+using UnityEngine.SceneManagement;
 
 public class gameBoard : MonoBehaviour
 {
@@ -21,8 +24,14 @@ public class gameBoard : MonoBehaviour
 
     public GameObject test;
 
+    public GameObject spawnMenu;
+
     private Vector2 lastClicked;
 
+    private bool isPlayerOneTurn;
+
+    public int player1Funds, player2Funds;
+    public Text fundsTextBox;
 
     private void Start()
     {
@@ -53,6 +62,30 @@ public class gameBoard : MonoBehaviour
         terrainTileInstanceTypesTest[3, 3] = "terrain3";
         terrainTileInstanceTypesTest[4, 4] = "base1";
         initializeTerrain(terrainTileInstanceTypesTest);
+
+        //initialize turn state
+        isPlayerOneTurn = true;
+
+        //initialize menus
+        spawnMenu.SetActive(false);
+
+        //initialize default values
+        player1Funds = player2Funds = 5000;
+    }
+
+    public void endTurn()
+    {
+        isPlayerOneTurn = !isPlayerOneTurn;
+    }
+
+    public void displaySpawnMenu()
+    {
+        spawnMenu.SetActive(!spawnMenu.activeInHierarchy);
+
+        if (isPlayerOneTurn)
+            fundsTextBox.text = player1Funds.ToString();
+        else
+            fundsTextBox.text = player2Funds.ToString();
 
     }
 
