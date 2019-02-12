@@ -15,18 +15,20 @@ public class gameBoard : MonoBehaviour
     public Vector3 pz = new Vector3(-5.0f, 0.0f, 0.0f);
 
     public GameObject base1;
+    public GameObject base2;
     public GameObject terrain1;
     public GameObject terrain2;
     public GameObject terrain3;
     public GameObject melee1;
+    public GameObject melee2;
 
     public GameObject selectedUnit;
-
-    public GameObject test;
 
     public GameObject spawnMenu;
 
     private Vector2 lastClicked;
+    private Vector2 baseLocation1;
+    private Vector2 baseLocation2;
 
     private bool isPlayerOneTurn;
 
@@ -47,11 +49,6 @@ public class gameBoard : MonoBehaviour
             for (int j = 0; j < 10; j++)
                 unitTileInstanceTypes[i, j] = "empty";
 
-        test = Instantiate(melee1) as GameObject;
-        test.transform.position = new Vector3(0, 0, -2);
-        unitTileInstances[0, 0] = test;
-        unitTileInstanceTypes[0, 0] = "melee1";
-
         string[,] terrainTileInstanceTypesTest = new string[10, 10];
         for (int i = 0; i < 10; i++)
             for (int j = 0; j < 10; j++)
@@ -61,6 +58,7 @@ public class gameBoard : MonoBehaviour
         terrainTileInstanceTypesTest[2, 2] = "terrain2";
         terrainTileInstanceTypesTest[3, 3] = "terrain3";
         terrainTileInstanceTypesTest[4, 4] = "base1";
+        terrainTileInstanceTypesTest[6, 4] = "base2";
         initializeTerrain(terrainTileInstanceTypesTest);
 
         //initialize turn state
@@ -89,6 +87,24 @@ public class gameBoard : MonoBehaviour
 
     }
 
+    public void spawnMeleeUnit()
+    {
+        if (isPlayerOneTurn)
+        {
+            GameObject unitInstance = Instantiate(melee1) as GameObject;
+            unitInstance.transform.position = new Vector3(baseLocation1.x, baseLocation1.y, -2);
+            unitTileInstanceTypes[(int)baseLocation1.x, (int)baseLocation1.y] = "melee1";
+            unitTileInstances[(int)baseLocation1.x, (int)baseLocation1.y] = unitInstance;
+        } else {
+            GameObject unitInstance = Instantiate(melee2) as GameObject;
+            unitInstance.transform.position = new Vector3(baseLocation2.x, baseLocation2.y, -2);
+            unitTileInstanceTypes[(int)baseLocation2.x, (int)baseLocation2.y] = "melee2";
+            unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] = unitInstance;
+        }
+
+        displaySpawnMenu();
+    }
+
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -108,9 +124,10 @@ public class gameBoard : MonoBehaviour
                     else
                     {
                         selectedUnit.transform.position = new Vector3(currMouseX, currMouseY, -2);
+                        unitTileInstanceTypes[currMouseX, currMouseY] = unitTileInstanceTypes[(int)lastClicked.x, (int)lastClicked.y];
                         unitTileInstanceTypes[(int)lastClicked.x, (int)lastClicked.y] = "empty";
                         unitTileInstances[(int)lastClicked.x, (int)lastClicked.y] = null;
-                        unitTileInstanceTypes[currMouseX, currMouseY] = "melee1";
+                        
                         unitTileInstances[currMouseX, currMouseY] = selectedUnit;
                         selectedUnit = null;
                         lastClicked.x = Mathf.Round((hit.point.x));
@@ -119,8 +136,13 @@ public class gameBoard : MonoBehaviour
                     }
                 }
 
-                if (unitTileInstanceTypes[currMouseX, currMouseY] == "melee1")
+                if (unitTileInstanceTypes[currMouseX, currMouseY] == "melee1" && isPlayerOneTurn)
                 {
+                    selectedUnit = unitTileInstances[currMouseX, currMouseY];
+                    lastClicked.x = Mathf.Round((hit.point.x));
+                    lastClicked.y = Mathf.Round((hit.point.y));
+                    return;
+                } else if (unitTileInstanceTypes[currMouseX, currMouseY] == "melee2" && !isPlayerOneTurn) {
                     selectedUnit = unitTileInstances[currMouseX, currMouseY];
                     lastClicked.x = Mathf.Round((hit.point.x));
                     lastClicked.y = Mathf.Round((hit.point.y));
@@ -153,7 +175,13 @@ public class gameBoard : MonoBehaviour
                 else if (terrainInput[i, j] == "base1") {
                     GameObject terrainTile = Instantiate(base1) as GameObject;
                     terrainTile.transform.position = new Vector3(i, j, -1);
-                } 
+                    baseLocation1.Set(i, j);
+                }
+                else if (terrainInput[i, j] == "base2") {
+                    GameObject terrainTile = Instantiate(base2) as GameObject;
+                    terrainTile.transform.position = new Vector3(i, j, -1);
+                    baseLocation2.Set(i, j);
+                }
 
             }
         }
