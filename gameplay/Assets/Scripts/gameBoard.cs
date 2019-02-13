@@ -34,6 +34,8 @@ public class gameBoard : MonoBehaviour
 
     public int player1Funds, player2Funds;
     public Text fundsTextBox;
+    public GameObject showPlayer1Turn;
+    public GameObject showPlayer2Turn;
 
     private void Start()
     {
@@ -62,7 +64,10 @@ public class gameBoard : MonoBehaviour
         initializeTerrain(terrainTileInstanceTypesTest);
 
         //initialize turn state
-        isPlayerOneTurn = true;
+        isPlayerOneTurn = (UnityEngine.Random.value > 0.5f);
+        showPlayer1Turn.SetActive(false);
+        showPlayer2Turn.SetActive(false);
+        endTurn();
 
         //initialize menus
         spawnMenu.SetActive(false);
@@ -74,6 +79,25 @@ public class gameBoard : MonoBehaviour
     public void endTurn()
     {
         isPlayerOneTurn = !isPlayerOneTurn;
+
+        if (isPlayerOneTurn)
+            StartCoroutine(displayPlayer1Turn());
+        else
+            StartCoroutine(displayPlayer2Turn());
+    }
+
+    private IEnumerator displayPlayer1Turn()
+    {
+        showPlayer1Turn.SetActive(true);
+        yield return new WaitForSeconds(3);
+        showPlayer1Turn.SetActive(false);
+    }
+
+    private IEnumerator displayPlayer2Turn()
+    {
+        showPlayer2Turn.SetActive(true);
+        yield return new WaitForSeconds(3);
+        showPlayer2Turn.SetActive(false);
     }
 
     public void displaySpawnMenu()
@@ -89,17 +113,21 @@ public class gameBoard : MonoBehaviour
 
     public void spawnMeleeUnit()
     {
-        if (isPlayerOneTurn)
+        if (isPlayerOneTurn && unitTileInstances[(int)baseLocation1.x, (int)baseLocation1.y] == null && player1Funds - 1000 >= 0)
         {
             GameObject unitInstance = Instantiate(melee1) as GameObject;
             unitInstance.transform.position = new Vector3(baseLocation1.x, baseLocation1.y, -2);
+            unitInstance.GetComponent<unit>().health = 100;
             unitTileInstanceTypes[(int)baseLocation1.x, (int)baseLocation1.y] = "melee1";
             unitTileInstances[(int)baseLocation1.x, (int)baseLocation1.y] = unitInstance;
-        } else {
+            player1Funds -= 1000;
+        } else if (!isPlayerOneTurn && unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] == null && player2Funds - 1000 >= 0) {
             GameObject unitInstance = Instantiate(melee2) as GameObject;
             unitInstance.transform.position = new Vector3(baseLocation2.x, baseLocation2.y, -2);
+            unitInstance.GetComponent<unit>().health = 100;
             unitTileInstanceTypes[(int)baseLocation2.x, (int)baseLocation2.y] = "melee2";
             unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] = unitInstance;
+            player2Funds -= 1000;
         }
 
         displaySpawnMenu();
