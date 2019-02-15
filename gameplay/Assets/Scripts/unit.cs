@@ -11,8 +11,10 @@ public class unit : MonoBehaviour
 
     private void Start()
     {
-        health = 100;
-        defense = 0.0;
+        //isPlayerOneUnit = true;
+        //health = 100;
+        //defense = 0.0f;
+        //typeOfUnit = "";
     }
 
     private void Update()

@@ -10,7 +10,6 @@ public class gameBoard : MonoBehaviour
     public static gameBoard Instance { set; get; }
 
     public string[,] terrainTileInstanceTypes = new string[10, 10];
-    public string[,] unitTileInstanceTypes = new string[10, 10];
     public GameObject[,] unitTileInstances = new GameObject[10, 10];
     public Vector3 pz = new Vector3(-5.0f, 0.0f, 0.0f);
 
@@ -19,6 +18,7 @@ public class gameBoard : MonoBehaviour
     public GameObject terrain1;
     public GameObject terrain2;
     public GameObject terrain3;
+    public GameObject terrain4;
     public GameObject melee1;
     public GameObject melee2;
 
@@ -47,21 +47,8 @@ public class gameBoard : MonoBehaviour
             for (int j = 0; j < 10; j++)
                 unitTileInstances[i, j] = null;
 
-        for (int i = 0; i < 10; i++)
-            for (int j = 0; j < 10; j++)
-                unitTileInstanceTypes[i, j] = "empty";
-
-        string[,] terrainTileInstanceTypesTest = new string[10, 10];
-        for (int i = 0; i < 10; i++)
-            for (int j = 0; j < 10; j++)
-                terrainTileInstanceTypesTest[i, j] = "empty";
-
-        terrainTileInstanceTypesTest[1, 1] = "terrain1";
-        terrainTileInstanceTypesTest[2, 2] = "terrain2";
-        terrainTileInstanceTypesTest[3, 3] = "terrain3";
-        terrainTileInstanceTypesTest[4, 4] = "base1";
-        terrainTileInstanceTypesTest[6, 4] = "base2";
-        initializeTerrain(terrainTileInstanceTypesTest);
+        //load map
+        loadMap1();
 
         //initialize turn state
         isPlayerOneTurn = (UnityEngine.Random.value > 0.5f);
@@ -74,6 +61,29 @@ public class gameBoard : MonoBehaviour
 
         //initialize default values
         player1Funds = player2Funds = 5000;
+    }
+
+    public void loadMap1()
+    {
+        string[,] t = new string[10, 10];
+
+        //t1 = regular tile
+        //t2 = impassible tile
+        //t3 = defensive tile
+        //t4 = resource tile
+
+        t[0, 9] = "t1"; t[1, 9] = "t1"; t[2, 9] = "t1"; t[3, 9] = "t1"; t[4, 9] = "t1"; t[5, 9] = "t3"; t[6, 9] = "t1"; t[7, 9] = "t1"; t[8, 9] = "t1"; t[9, 9] = "t1";
+        t[0, 8] = "t1"; t[1, 8] = "t2"; t[2, 8] = "t1"; t[3, 8] = "t1"; t[4, 8] = "t1"; t[5, 8] = "t3"; t[6, 8] = "t1"; t[7, 8] = "t1"; t[8, 8] = "b2"; t[9, 8] = "t1";
+        t[0, 7] = "t3"; t[1, 7] = "t3"; t[2, 7] = "t3"; t[3, 7] = "t1"; t[4, 7] = "t2"; t[5, 7] = "t2"; t[6, 7] = "t1"; t[7, 7] = "t1"; t[8, 7] = "t1"; t[9, 7] = "t1";
+        t[0, 6] = "t1"; t[1, 6] = "t1"; t[2, 6] = "t1"; t[3, 6] = "t2"; t[4, 6] = "t2"; t[5, 6] = "t2"; t[6, 6] = "t2"; t[7, 6] = "t1"; t[8, 6] = "t4"; t[9, 6] = "t1";
+        t[0, 5] = "t1"; t[1, 5] = "t4"; t[2, 5] = "t1"; t[3, 5] = "t2"; t[4, 5] = "t2"; t[5, 5] = "t2"; t[6, 5] = "t2"; t[7, 5] = "t3"; t[8, 5] = "t3"; t[9, 5] = "t3";
+        t[0, 4] = "t3"; t[1, 4] = "t3"; t[2, 4] = "t3"; t[3, 4] = "t2"; t[4, 4] = "t2"; t[5, 4] = "t2"; t[6, 4] = "t2"; t[7, 4] = "t1"; t[8, 4] = "t4"; t[9, 4] = "t1";
+        t[0, 3] = "t1"; t[1, 3] = "t4"; t[2, 3] = "t1"; t[3, 3] = "t2"; t[4, 3] = "t2"; t[5, 3] = "t2"; t[6, 3] = "t2"; t[7, 3] = "t1"; t[8, 3] = "t1"; t[9, 3] = "t1";
+        t[0, 2] = "t1"; t[1, 2] = "t1"; t[2, 2] = "t1"; t[3, 2] = "t1"; t[4, 2] = "t2"; t[5, 2] = "t2"; t[6, 2] = "t1"; t[7, 2] = "t3"; t[8, 2] = "t3"; t[9, 2] = "t3";
+        t[0, 1] = "t1"; t[1, 1] = "b1"; t[2, 1] = "t1"; t[3, 1] = "t1"; t[4, 1] = "t3"; t[5, 1] = "t1"; t[6, 1] = "t1"; t[7, 1] = "t1"; t[8, 1] = "t2"; t[9, 1] = "t1";
+        t[0, 0] = "t1"; t[1, 0] = "t1"; t[2, 0] = "t1"; t[3, 0] = "t1"; t[4, 0] = "t3"; t[5, 0] = "t1"; t[6, 0] = "t1"; t[7, 0] = "t1"; t[8, 0] = "t1"; t[9, 0] = "t1";
+    
+        initializeTerrain(t);
     }
 
     public void endTurn()
@@ -118,14 +128,16 @@ public class gameBoard : MonoBehaviour
             GameObject unitInstance = Instantiate(melee1) as GameObject;
             unitInstance.transform.position = new Vector3(baseLocation1.x, baseLocation1.y, -2);
             unitInstance.GetComponent<unit>().health = 100;
-            unitTileInstanceTypes[(int)baseLocation1.x, (int)baseLocation1.y] = "melee1";
+            unitInstance.GetComponent<unit>().typeOfUnit = "melee";
+            unitInstance.GetComponent<unit>().isPlayerOneUnit = true;
             unitTileInstances[(int)baseLocation1.x, (int)baseLocation1.y] = unitInstance;
             player1Funds -= 1000;
         } else if (!isPlayerOneTurn && unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] == null && player2Funds - 1000 >= 0) {
             GameObject unitInstance = Instantiate(melee2) as GameObject;
             unitInstance.transform.position = new Vector3(baseLocation2.x, baseLocation2.y, -2);
             unitInstance.GetComponent<unit>().health = 100;
-            unitTileInstanceTypes[(int)baseLocation2.x, (int)baseLocation2.y] = "melee2";
+            unitInstance.GetComponent<unit>().typeOfUnit = "melee";
+            unitInstance.GetComponent<unit>().isPlayerOneUnit = false;
             unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] = unitInstance;
             player2Funds -= 1000;
         }
@@ -145,15 +157,13 @@ public class gameBoard : MonoBehaviour
 
                 Debug.Log(lastClicked);
 
-                if (unitTileInstanceTypes[currMouseX, currMouseY] == "empty")
+                if (unitTileInstances[currMouseX, currMouseY] == null)
                 {
                     if (selectedUnit == null)
                         return;
                     else
                     {
                         selectedUnit.transform.position = new Vector3(currMouseX, currMouseY, -2);
-                        unitTileInstanceTypes[currMouseX, currMouseY] = unitTileInstanceTypes[(int)lastClicked.x, (int)lastClicked.y];
-                        unitTileInstanceTypes[(int)lastClicked.x, (int)lastClicked.y] = "empty";
                         unitTileInstances[(int)lastClicked.x, (int)lastClicked.y] = null;
                         
                         unitTileInstances[currMouseX, currMouseY] = selectedUnit;
@@ -164,17 +174,23 @@ public class gameBoard : MonoBehaviour
                     }
                 }
 
-                if (unitTileInstanceTypes[currMouseX, currMouseY] == "melee1" && isPlayerOneTurn)
+                if (unitTileInstances[currMouseX, currMouseY] != null)
                 {
-                    selectedUnit = unitTileInstances[currMouseX, currMouseY];
-                    lastClicked.x = Mathf.Round((hit.point.x));
-                    lastClicked.y = Mathf.Round((hit.point.y));
-                    return;
-                } else if (unitTileInstanceTypes[currMouseX, currMouseY] == "melee2" && !isPlayerOneTurn) {
-                    selectedUnit = unitTileInstances[currMouseX, currMouseY];
-                    lastClicked.x = Mathf.Round((hit.point.x));
-                    lastClicked.y = Mathf.Round((hit.point.y));
-                    return;
+                    Debug.Log(unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit);
+                    if (unitTileInstances[currMouseX, currMouseY] != null && isPlayerOneTurn && unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit)
+                    {
+                        selectedUnit = unitTileInstances[currMouseX, currMouseY];
+                        lastClicked.x = Mathf.Round((hit.point.x));
+                        lastClicked.y = Mathf.Round((hit.point.y));
+                        return;
+                    }
+                    else if (unitTileInstances[currMouseX, currMouseY] != null && !isPlayerOneTurn && !unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit)
+                    {
+                        selectedUnit = unitTileInstances[currMouseX, currMouseY];
+                        lastClicked.x = Mathf.Round((hit.point.x));
+                        lastClicked.y = Mathf.Round((hit.point.y));
+                        return;
+                    }
                 }
             }
         }
@@ -188,24 +204,29 @@ public class gameBoard : MonoBehaviour
             {
                 this.terrainTileInstanceTypes[i, j] = terrainInput[i, j];
 
-                if (terrainInput[i,j] == "terrain1")
+                if (terrainInput[i,j] == "t1")
                 {
                     GameObject terrainTile = Instantiate(terrain1) as GameObject;
                     terrainTile.transform.position = new Vector3(i, j, -1);
-                } else if (terrainInput[i, j] == "terrain2") {
+                } else if (terrainInput[i, j] == "t2") {
                     GameObject terrainTile = Instantiate(terrain2) as GameObject;
                     terrainTile.transform.position = new Vector3(i, j, -1);
                 }
-                else if (terrainInput[i, j] == "terrain3") {
+                else if (terrainInput[i, j] == "t3") {
                     GameObject terrainTile = Instantiate(terrain3) as GameObject;
                     terrainTile.transform.position = new Vector3(i, j, -1);
                 }
-                else if (terrainInput[i, j] == "base1") {
+                else if (terrainInput[i, j] == "t4")
+                {
+                    GameObject terrainTile = Instantiate(terrain4) as GameObject;
+                    terrainTile.transform.position = new Vector3(i, j, -1);
+                }
+                else if (terrainInput[i, j] == "b1") {
                     GameObject terrainTile = Instantiate(base1) as GameObject;
                     terrainTile.transform.position = new Vector3(i, j, -1);
                     baseLocation1.Set(i, j);
                 }
-                else if (terrainInput[i, j] == "base2") {
+                else if (terrainInput[i, j] == "b2") {
                     GameObject terrainTile = Instantiate(base2) as GameObject;
                     terrainTile.transform.position = new Vector3(i, j, -1);
                     baseLocation2.Set(i, j);

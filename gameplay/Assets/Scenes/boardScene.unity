@@ -1105,6 +1105,8 @@ MonoBehaviour:
     type: 3}
   terrain3: {fileID: 1408710064225956231, guid: 09d5ca95f4b0345478bc01536706a14d,
     type: 3}
+  terrain4: {fileID: 4818852775687053259, guid: 7dcbf0b13eb62bf438d884591d23c2d0,
+    type: 3}
   melee1: {fileID: 6385284349475645496, guid: 11c78d75470e9b546ba8981e51440304, type: 3}
   melee2: {fileID: 5544105996837429976, guid: 76eab1fb4471e1a4688a50a2a0d4bff3, type: 3}
   selectedUnit: {fileID: 0}

@@ -92,3 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 756e5a5aa2d33be4aab48c6c6cc4f4fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 0
+  isPlayerOneUnit: 0
+  defense: 0
+  typeOfUnit: 
