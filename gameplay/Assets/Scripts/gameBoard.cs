@@ -23,7 +23,7 @@ public class gameBoard : MonoBehaviour
     public GameObject melee2;
 
     public GameObject selectedUnit;
-
+    public GameObject lightBlueValidMoveTile;
     public GameObject spawnMenu;
 
     private Vector2 lastClicked;
@@ -128,7 +128,9 @@ public class gameBoard : MonoBehaviour
             GameObject unitInstance = Instantiate(melee1) as GameObject;
             unitInstance.transform.position = new Vector3(baseLocation1.x, baseLocation1.y, -2);
             unitInstance.GetComponent<unit>().health = 100;
+            unitInstance.GetComponent<unit>().maxHealth = 100;
             unitInstance.GetComponent<unit>().typeOfUnit = "melee";
+            unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             unitInstance.GetComponent<unit>().isPlayerOneUnit = true;
             unitTileInstances[(int)baseLocation1.x, (int)baseLocation1.y] = unitInstance;
             player1Funds -= 1000;
@@ -136,7 +138,9 @@ public class gameBoard : MonoBehaviour
             GameObject unitInstance = Instantiate(melee2) as GameObject;
             unitInstance.transform.position = new Vector3(baseLocation2.x, baseLocation2.y, -2);
             unitInstance.GetComponent<unit>().health = 100;
+            unitInstance.GetComponent<unit>().maxHealth = 100;
             unitInstance.GetComponent<unit>().typeOfUnit = "melee";
+            unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             unitInstance.GetComponent<unit>().isPlayerOneUnit = false;
             unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] = unitInstance;
             player2Funds -= 1000;
@@ -161,7 +165,11 @@ public class gameBoard : MonoBehaviour
                 {
                     if (selectedUnit == null)
                         return;
-                    else
+                    else if (Math.Abs(currMouseX - lastClicked.x) > unitTileInstances[(int)lastClicked.x, (int)lastClicked.y].GetComponent<unit>().maxMoveDistance ||
+                        Math.Abs(currMouseY - lastClicked.y) > unitTileInstances[(int)lastClicked.x, (int)lastClicked.y].GetComponent<unit>().maxMoveDistance)
+                    {
+                        return;
+                    } else
                     {
                         selectedUnit.transform.position = new Vector3(currMouseX, currMouseY, -2);
                         unitTileInstances[(int)lastClicked.x, (int)lastClicked.y] = null;
@@ -170,6 +178,8 @@ public class gameBoard : MonoBehaviour
                         selectedUnit = null;
                         lastClicked.x = Mathf.Round((hit.point.x));
                         lastClicked.y = Mathf.Round((hit.point.y));
+
+                        eraseValidMoveTiles();
                         return;
                     }
                 }
@@ -179,18 +189,49 @@ public class gameBoard : MonoBehaviour
                     Debug.Log(unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit);
                     if (unitTileInstances[currMouseX, currMouseY] != null && isPlayerOneTurn && unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit)
                     {
+                        eraseValidMoveTiles();
                         selectedUnit = unitTileInstances[currMouseX, currMouseY];
+                        drawValidMoveTiles(currMouseX, currMouseY);
                         lastClicked.x = Mathf.Round((hit.point.x));
                         lastClicked.y = Mathf.Round((hit.point.y));
                         return;
                     }
                     else if (unitTileInstances[currMouseX, currMouseY] != null && !isPlayerOneTurn && !unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit)
                     {
+                        eraseValidMoveTiles();
                         selectedUnit = unitTileInstances[currMouseX, currMouseY];
+                        drawValidMoveTiles(currMouseX, currMouseY);
                         lastClicked.x = Mathf.Round((hit.point.x));
                         lastClicked.y = Mathf.Round((hit.point.y));
                         return;
                     }
+                }
+            }
+        }
+    }
+
+    private void eraseValidMoveTiles()
+    {
+        Debug.Log("testerase\n");
+        var validMoveTilesPresent = GameObject.FindGameObjectsWithTag("ValidMove");
+        foreach (GameObject obj in validMoveTilesPresent) 
+        {
+            Destroy(obj);
+        }
+    }
+
+    private void drawValidMoveTiles(int x, int y)
+    {
+        int maxMoveDistance = selectedUnit.GetComponent<unit>().maxMoveDistance;
+
+        for (int i = x - maxMoveDistance; i <= x + maxMoveDistance; i++)
+        {
+            for (int j = y - maxMoveDistance; j <= y + maxMoveDistance; j++)
+            {
+                if (i >= 0 && i < 10 && j >= 0 && j < 10)
+                {
+                    GameObject validMoveTileInstance = Instantiate(lightBlueValidMoveTile) as GameObject;
+                    validMoveTileInstance.transform.position = new Vector3(i, j, -3);
                 }
             }
         }

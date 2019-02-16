@@ -1110,6 +1110,8 @@ MonoBehaviour:
   melee1: {fileID: 6385284349475645496, guid: 11c78d75470e9b546ba8981e51440304, type: 3}
   melee2: {fileID: 5544105996837429976, guid: 76eab1fb4471e1a4688a50a2a0d4bff3, type: 3}
   selectedUnit: {fileID: 0}
+  lightBlueValidMoveTile: {fileID: 3684366913887164867, guid: 424c665401defae48844fab3bf5b7bef,
+    type: 3}
   spawnMenu: {fileID: 1241122944}
   player1Funds: 0
   player2Funds: 0

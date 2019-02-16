@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\gameBoard.cs" />
+     <Compile Include="Assets\Scripts\healthBar.cs" />
      <Compile Include="Assets\Scripts\unit.cs" />
  <Reference Include="Unity.TextMeshPro.Editor">
  <HintPath>C:/Users/benlo/Documents/Unity/gameplay/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
