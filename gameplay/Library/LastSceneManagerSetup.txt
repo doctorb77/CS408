@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/SubmitScore.unity
+- path: Assets/Scenes/Scoreboard.unity
   isLoaded: 1
   isActive: 1
