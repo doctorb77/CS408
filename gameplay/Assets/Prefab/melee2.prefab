@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6721559149179160328}
   m_Layer: 0
   m_Name: melee2
-  m_TagString: Untagged
+  m_TagString: unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -94,9 +94,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 0
+  maxHealth: 0
   isPlayerOneUnit: 0
   defense: 0
   typeOfUnit: 
+  maxMoveDistance: 0
+  unitWasMoved: 0
 --- !u!1 &6842029880991887398
 GameObject:
   m_ObjectHideFlags: 0

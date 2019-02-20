@@ -94,6 +94,8 @@ public class gameBoard : MonoBehaviour
             StartCoroutine(displayPlayer1Turn());
         else
             StartCoroutine(displayPlayer2Turn());
+
+        resetUnitProperties();
     }
 
     private IEnumerator displayPlayer1Turn()
@@ -132,6 +134,7 @@ public class gameBoard : MonoBehaviour
             unitInstance.GetComponent<unit>().typeOfUnit = "melee";
             unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             unitInstance.GetComponent<unit>().isPlayerOneUnit = true;
+            unitInstance.GetComponent<unit>().unitWasMoved = false;
             unitTileInstances[(int)baseLocation1.x, (int)baseLocation1.y] = unitInstance;
             player1Funds -= 1000;
         } else if (!isPlayerOneTurn && unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] == null && player2Funds - 1000 >= 0) {
@@ -142,6 +145,7 @@ public class gameBoard : MonoBehaviour
             unitInstance.GetComponent<unit>().typeOfUnit = "melee";
             unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             unitInstance.GetComponent<unit>().isPlayerOneUnit = false;
+            unitInstance.GetComponent<unit>().unitWasMoved = false;
             unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] = unitInstance;
             player2Funds -= 1000;
         }
@@ -161,6 +165,7 @@ public class gameBoard : MonoBehaviour
 
                 Debug.Log(lastClicked);
 
+                //if spot is empty move selected unit there
                 if (unitTileInstances[currMouseX, currMouseY] == null)
                 {
                     if (selectedUnit == null)
@@ -175,18 +180,38 @@ public class gameBoard : MonoBehaviour
                         unitTileInstances[(int)lastClicked.x, (int)lastClicked.y] = null;
                         
                         unitTileInstances[currMouseX, currMouseY] = selectedUnit;
+                        unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().unitWasMoved = true;
+                        unitTileInstances[currMouseX, currMouseY].GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.4f);
+                        unitTileInstances[currMouseX, currMouseY].GetComponent<Animator>().SetInteger("state", 1);
+
                         selectedUnit = null;
                         lastClicked.x = Mathf.Round((hit.point.x));
                         lastClicked.y = Mathf.Round((hit.point.y));
 
                         eraseValidMoveTiles();
+
+                        
                         return;
                     }
                 }
+                //if player 1 moving to attack player 2 unit
+                else if (isPlayerOneTurn && !unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit) 
+                {
 
+                }
+                //if player 2 moving to attack player 1 unit
+                else if (!isPlayerOneTurn && unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit)
+                {
+
+                }
+
+                //select a unit
                 if (unitTileInstances[currMouseX, currMouseY] != null)
                 {
-                    Debug.Log(unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit);
+
+                    if (unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().unitWasMoved == true)
+                        return;
+
                     if (unitTileInstances[currMouseX, currMouseY] != null && isPlayerOneTurn && unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit)
                     {
                         eraseValidMoveTiles();
@@ -210,9 +235,18 @@ public class gameBoard : MonoBehaviour
         }
     }
 
+    private void resetUnitProperties()
+    {
+        var units = GameObject.FindGameObjectsWithTag("unit");
+        foreach (GameObject obj in units)
+        {
+            obj.GetComponent<unit>().unitWasMoved = false;
+            obj.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 1f);
+        }
+    }
+
     private void eraseValidMoveTiles()
     {
-        Debug.Log("testerase\n");
         var validMoveTilesPresent = GameObject.FindGameObjectsWithTag("ValidMove");
         foreach (GameObject obj in validMoveTilesPresent) 
         {

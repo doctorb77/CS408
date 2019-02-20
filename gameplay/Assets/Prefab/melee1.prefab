@@ -103,9 +103,10 @@ GameObject:
   - component: {fileID: 6765659073239572277}
   - component: {fileID: 8343118799448906417}
   - component: {fileID: 7632399995629884104}
+  - component: {fileID: 7587123165182903276}
   m_Layer: 0
   m_Name: melee1
-  m_TagString: Untagged
+  m_TagString: unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -186,6 +187,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 0
+  maxHealth: 0
   isPlayerOneUnit: 0
   defense: 0
   typeOfUnit: 
+  maxMoveDistance: 0
+  unitWasMoved: 0
+--- !u!95 &7587123165182903276
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6385284349475645496}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9809c48c9711de74083c702cedbe163f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

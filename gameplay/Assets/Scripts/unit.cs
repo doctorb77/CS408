@@ -10,4 +10,5 @@ public class unit : MonoBehaviour
     public float defense;
     public string typeOfUnit;
     public int maxMoveDistance;
+    public bool unitWasMoved;
 }
