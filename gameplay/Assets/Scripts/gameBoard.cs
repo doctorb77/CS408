@@ -135,6 +135,7 @@ public class gameBoard : MonoBehaviour
             unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             unitInstance.GetComponent<unit>().isPlayerOneUnit = true;
             unitInstance.GetComponent<unit>().unitWasMoved = false;
+            unitInstance.GetComponent<unit>().lastFacingRight = true;
             unitTileInstances[(int)baseLocation1.x, (int)baseLocation1.y] = unitInstance;
             player1Funds -= 1000;
         } else if (!isPlayerOneTurn && unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] == null && player2Funds - 1000 >= 0) {
@@ -146,6 +147,7 @@ public class gameBoard : MonoBehaviour
             unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             unitInstance.GetComponent<unit>().isPlayerOneUnit = false;
             unitInstance.GetComponent<unit>().unitWasMoved = false;
+            unitInstance.GetComponent<unit>().lastFacingRight = false;
             unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] = unitInstance;
             player2Funds -= 1000;
         }
@@ -182,7 +184,8 @@ public class gameBoard : MonoBehaviour
                         unitTileInstances[currMouseX, currMouseY] = selectedUnit;
                         unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().unitWasMoved = true;
                         unitTileInstances[currMouseX, currMouseY].GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.4f);
-                        unitTileInstances[currMouseX, currMouseY].GetComponent<Animator>().SetInteger("state", 1);
+                        unitTileInstances[currMouseX, currMouseY].GetComponent<Animator>().SetTrigger("idleleft");
+                        
 
                         selectedUnit = null;
                         lastClicked.x = Mathf.Round((hit.point.x));

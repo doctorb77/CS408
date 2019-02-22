@@ -11,4 +11,5 @@ public class unit : MonoBehaviour
     public string typeOfUnit;
     public int maxMoveDistance;
     public bool unitWasMoved;
+    public bool lastFacingRight;
 }
