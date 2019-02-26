@@ -5,6 +5,7 @@ using System.Net;
 using System;
 using System.IO;
 using UnityEngine.UI;
+using System.Text;
 //using Assets;
 public class getScores : MonoBehaviour
 {
@@ -46,7 +47,6 @@ public class getScores : MonoBehaviour
 
         //Parse scores into the person array
         parseScores(jsonResponse);
-
         //Display current 10 scores
         displayTenScores();
         GameObject.Find("searchButton").GetComponent<Button>().onClick.AddListener(searchButtonCLick);
@@ -102,7 +102,6 @@ public class getScores : MonoBehaviour
             Debug.Log("Person: " + searchArray[i].name + "Rank: " + searchArray[i].rank + " Score: " + searchArray[i].score);
         }
     }
-
 
     /// <summary>
     /// Find amount of people, so that you can create a correctly sized array of person objects

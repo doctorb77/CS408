@@ -22,7 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Temp\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_3_4;UNITY_2018_3;UNITY_2018;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_SPRITES;ENABLE_GRID;ENABLE_TILEMAP;ENABLE_TERRAIN;ENABLE_TEXTURE_STREAMING;ENABLE_DIRECTOR;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_TIMELINE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;INCLUDE_DYNAMIC_GI;INCLUDE_GI;ENABLE_MONO_BDWGC;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_VIDEO;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_LOCALIZATION;PLATFORM_STANDALONE_WIN;PLATFORM_STANDALONE;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_EVENT_QUEUE;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;ENABLE_VR;ENABLE_AR;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_STANDARD_2_0;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_2017_1_OR_NEWER;UNITY_2017_2_OR_NEWER;UNITY_2017_3_OR_NEWER;UNITY_2017_4_OR_NEWER;UNITY_2018_1_OR_NEWER;UNITY_2018_2_OR_NEWER;UNITY_2018_3_OR_NEWER;UNITY_2018_3_4;UNITY_2018_3;UNITY_2018;PLATFORM_ARCH_64;UNITY_64;UNITY_INCLUDE_TESTS;UNITY_ANALYTICS;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_DUCK_TYPING;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_SPRITES;ENABLE_GRID;ENABLE_TILEMAP;ENABLE_TERRAIN;ENABLE_TEXTURE_STREAMING;ENABLE_DIRECTOR;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_COLLAB_SOFTLOCKS;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_USE_WEBREQUEST;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_HUB;ENABLE_EDITOR_HUB_LICENSE;ENABLE_WEBSOCKET_CLIENT;ENABLE_DIRECTOR_AUDIO;ENABLE_DIRECTOR_TEXTURE;ENABLE_TIMELINE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;ENABLE_MANAGED_JOBS;ENABLE_MANAGED_TRANSFORM_JOBS;ENABLE_MANAGED_ANIMATION_JOBS;INCLUDE_DYNAMIC_GI;INCLUDE_GI;ENABLE_MONO_BDWGC;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;INCLUDE_PUBNUB;ENABLE_VIDEO;ENABLE_CUSTOM_RENDER_TEXTURE;ENABLE_LOCALIZATION;PLATFORM_STANDALONE_WIN;PLATFORM_STANDALONE;UNITY_STANDALONE_WIN;UNITY_STANDALONE;ENABLE_SUBSTANCE;ENABLE_RUNTIME_GI;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;ENABLE_OUT_OF_PROCESS_CRASH_HANDLER;ENABLE_EVENT_QUEUE;ENABLE_CLUSTER_SYNC;ENABLE_CLUSTERINPUT;ENABLE_VR;ENABLE_AR;ENABLE_WEBSOCKET_HOST;ENABLE_MONO;NET_STANDARD_2_0;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_UNITY_COLLECTIONS_CHECKS;ENABLE_BURST_AOT;UNITY_TEAM_LICENSE;CSHARP_7_OR_LATER;CSHARP_7_3_OR_NEWER</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>0169</NoWarn>
@@ -53,9 +53,52 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\CraterClash_MainMenu\FindGame_Script.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\HostGame_Script.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\MainMenu_Script.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\Nebula Skyboxes\Scripts\ColorPicker_Material.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\Nebula Skyboxes\Scripts\MouseLook.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\Nebula Skyboxes\Scripts\SmoothCameraOrbit.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\UltimateCRT\Demo\Scripts\ImageSwitcher.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\UltimateCRT\Scripts\BaseCRTEffect.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\UltimateCRT\Scripts\CRTEffect.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\UltimateCRT\Scripts\StandaloneCRTEffect.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\VideoGlitches\Demo\Scripts\DemoVideoGlitches.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\VideoGlitches\Scripts\ImageEffectBase.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\VideoGlitches\Scripts\VideoGlitchBlackWhiteDistortion.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\VideoGlitches\Scripts\VideoGlitchBrokenScreen.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\VideoGlitches\Scripts\VideoGlitchCorruptionDigital.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\VideoGlitches\Scripts\VideoGlitchHelper.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\VideoGlitches\Scripts\VideoGlitchNoiseAnalog.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\VideoGlitches\Scripts\VideoGlitchNoiseDigital.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\VideoGlitches\Scripts\VideoGlitchOldTape.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\VideoGlitches\Scripts\VideoGlitchOldTV.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\VideoGlitches\Scripts\VideoGlitchOldVHS.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\VideoGlitches\Scripts\VideoGlitchRGBDisplay.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\VideoGlitches\Scripts\VideoGlitchShift.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\VideoGlitches\Scripts\VideoGlitchSpectrumOffset.cs" />
+     <Compile Include="Assets\CraterClash_MainMenu\VideoGlitches\Scripts\VideoGlitchVHSPause.cs" />
      <Compile Include="Assets\Scripts\gameBoard.cs" />
      <Compile Include="Assets\Scripts\getScores.cs" />
      <Compile Include="Assets\Scripts\SubmitScore.cs" />
+     <None Include="Assets\CraterClash_MainMenu\VideoGlitches\Resources\Shaders\VideoGlitchCorruptionDigital.shader" />
+     <None Include="Assets\CraterClash_MainMenu\VideoGlitches\Changelog.txt" />
+     <None Include="Assets\CraterClash_MainMenu\VideoGlitches\Resources\Shaders\VideoGlitchShift.shader" />
+     <None Include="Assets\CraterClash_MainMenu\Nebula Skyboxes\Nebula Skyboxes - Readme.txt" />
+     <None Include="Assets\CraterClash_MainMenu\UltimateCRT\Resources\CRTFinalPostprocess.cg.shader" />
+     <None Include="Assets\CraterClash_MainMenu\VideoGlitches\Resources\Shaders\VideoGlitchOldTV.shader" />
+     <None Include="Assets\CraterClash_MainMenu\VideoGlitches\Resources\Shaders\VideoGlitchOldVHS.shader" />
+     <None Include="Assets\CraterClash_MainMenu\VideoGlitches\Resources\Shaders\VideoGlitchCG.cginc" />
+     <None Include="Assets\CraterClash_MainMenu\VideoGlitches\Resources\Shaders\VideoGlitchNoiseAnalog.shader" />
+     <None Include="Assets\CraterClash_MainMenu\VideoGlitches\Resources\Shaders\VideoGlitchBlackWhiteDistortion.shader" />
+     <None Include="Assets\CraterClash_MainMenu\UltimateCRT\Resources\CRTBlur.cg.shader" />
+     <None Include="Assets\CraterClash_MainMenu\VideoGlitches\Resources\Shaders\VideoGlitchSpectrumOffset.shader" />
+     <None Include="Assets\CraterClash_MainMenu\VideoGlitches\Resources\Shaders\VideoGlitchBrokenScreen.shader" />
+     <None Include="Assets\CraterClash_MainMenu\VideoGlitches\Resources\Shaders\VideoGlitchVHSPause.shader" />
+     <None Include="Assets\CraterClash_MainMenu\UltimateCRT\Resources\CRTPostprocess.cg.shader" />
+     <None Include="Assets\CraterClash_MainMenu\VideoGlitches\Resources\Shaders\VideoGlitchRGBDisplay.shader" />
+     <None Include="Assets\CraterClash_MainMenu\VideoGlitches\Resources\Shaders\VideoGlitchNoiseDigital.shader" />
+     <None Include="Assets\CraterClash_MainMenu\VideoGlitches\Resources\Shaders\VideoGlitchOldTape.shader" />
  <Reference Include="Unity.TextMeshPro.Editor">
  <HintPath>C:/Users/Cylthus/Desktop/newcs408/CS408/gameplay/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
  </Reference>
