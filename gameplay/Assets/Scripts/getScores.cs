@@ -47,7 +47,7 @@ public class getScores : MonoBehaviour
 
         //Parse scores into the person array
         parseScores(jsonResponse);
-        //Display current 10 scores
+        //Display current 5 scores
         displayTenScores();
         GameObject.Find("searchButton").GetComponent<Button>().onClick.AddListener(searchButtonCLick);
     }
@@ -67,6 +67,8 @@ public class getScores : MonoBehaviour
             }
         }
         Array.Resize(ref searchArray, total);
+        Debug.Log("Search matches: " + total);
+
     }
 
     /// <summary>
@@ -168,6 +170,7 @@ public class getScores : MonoBehaviour
         printSearch();
         searching = true;
         clearValues();
+        searchOffset = 0;
         displayTenScoresSearch();
     }
 
@@ -177,14 +180,14 @@ public class getScores : MonoBehaviour
     public void displayTenScores()
     {
         int e = 0;
-        for (int i = offset; i < offset + 10 && (e + offset) < people.Length; i++, e++)
+        for (int i = offset; i < offset + 5 && (e + offset) < people.Length; i++, e++)
         {
             // create a new playerEntry prefab 
             GameObject go = (GameObject)Instantiate(playerEntryPrefab);
             // make it's parent this transform (player score list)
-            go.transform.SetParent(this.transform);
+            go.transform.SetParent(this.transform, false);
             // add rank, username, and score to the player entry
-            go.transform.Find("Rank").GetComponent<Text>().text = (e + 1 + offset).ToString();
+            go.transform.Find("Rank").GetComponent<Text>().text = people[e + offset].rank.ToString();
             go.transform.Find("Username").GetComponent<Text>().text = people[e + offset].name;
             go.transform.Find("Score").GetComponent<Text>().text = people[e + offset].score;
         }
@@ -193,16 +196,16 @@ public class getScores : MonoBehaviour
     public void displayTenScoresSearch()
     {
         int e = 0;
-        for (int i = searchOffset; i < searchOffset + 10 && (e + searchOffset) < searchArray.Length; i++, e++)
+        for (int i = searchOffset; i < searchOffset + 5 && (e + searchOffset) < searchArray.Length; i++, e++)
         {
             // create a new playerEntry prefab 
             GameObject go = (GameObject)Instantiate(playerEntryPrefab);
             // make it's parent this transform (player score list)
-            go.transform.SetParent(this.transform);
+            go.transform.SetParent(this.transform, false);
             // add rank, username, and score to the player entry
-            go.transform.Find("Rank").GetComponent<Text>().text = searchArray[e + offset].rank.ToString();
-            go.transform.Find("Username").GetComponent<Text>().text = searchArray[e + offset].name;
-            go.transform.Find("Score").GetComponent<Text>().text = searchArray[e + offset].score;
+            go.transform.Find("Rank").GetComponent<Text>().text = searchArray[e + searchOffset].rank.ToString();
+            go.transform.Find("Username").GetComponent<Text>().text = searchArray[e + searchOffset].name;
+            go.transform.Find("Score").GetComponent<Text>().text = searchArray[e + searchOffset].score;
         }
     }
 
@@ -212,31 +215,31 @@ public class getScores : MonoBehaviour
     /// </summary>
     public void click()
     {
-        GameObject.Find("<").GetComponent<Button>().onClick.AddListener(leftArrowClick);
-        GameObject.Find(">").GetComponent<Button>().onClick.AddListener(rightArrowClick);
+        GameObject.Find("G_button_prev").GetComponent<Button>().onClick.AddListener(leftArrowClick);
+        GameObject.Find("G_button_next").GetComponent<Button>().onClick.AddListener(rightArrowClick);
     }
 
 
     /// <summary>
-    /// click event for the < option. it reduces the offset by 10 and then calls display scores again to assign the text box values 
-    /// to the previous 10 scores of the people array
+    /// click event for the < option. it reduces the offset by 5 and then calls display scores again to assign the text box values 
+    /// to the previous 5 scores of the people array
     /// </summary>
     public void leftArrowClick()
     {
         clearValues();
         if (!searching)
         {
-            if (!((offset - 10) < 0))
+            if (!((offset - 5) < 0))
             {
-                offset -= 10;
+                offset -= 5;
             }
             displayTenScores();
         }
         else
         {
-            if (!((searchOffset - 10) < 0))
+            if (!((searchOffset - 5) < 0))
             {
-                searchOffset -= 10;
+                searchOffset -= 5;
             }
             displayTenScoresSearch();
         }
@@ -244,26 +247,26 @@ public class getScores : MonoBehaviour
 
 
     /// <summary>
-    /// click event for the > option. it reduces the offset by 10 and then calls display scores again to assign the text box values 
-    /// to the next 10 scores of the people array
+    /// click event for the > option. it reduces the offset by 5 and then calls display scores again to assign the text box values 
+    /// to the next 5 scores of the people array
     /// </summary>
     public void rightArrowClick()
     {
         if (!searching)
         {
             clearValues();
-            if (!(offset + 10 > peopleIndex))
+            if (!(offset + 5 > peopleIndex))
             {
-                offset += 10;
+                offset += 5;
             }
             displayTenScores();
         }
         else
         {
             clearValues();
-            if (!(searchOffset + 10 > searchIndex))
+            if (!(searchOffset + 5 >= searchIndex))
             {
-                searchOffset += 10;
+                searchOffset += 5;
             }
             displayTenScoresSearch();
         }
@@ -271,7 +274,7 @@ public class getScores : MonoBehaviour
 
 
     /// <summary>
-    /// Clear the highscores of the previous 10 scores (for use on the last page, where not all of the scores will be rewritten)
+    /// Clear the highscores of the previous 5 scores (for use on the last page, where not all of the scores will be rewritten)
     /// </summary>
     public void clearValues()
     {
