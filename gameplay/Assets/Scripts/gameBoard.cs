@@ -22,6 +22,8 @@ public class gameBoard : MonoBehaviour
     public GameObject terrain4;
     public GameObject melee1;
     public GameObject melee2;
+    public GameObject ranged1;
+    public GameObject ranged2;
 
     public GameObject selectedUnit;
     public GameObject lightBlueValidMoveTile;
@@ -125,40 +127,76 @@ public class gameBoard : MonoBehaviour
 
     }
 
-    public void spawnMeleeUnit()
+    public void spawnMeleeUnitTierOne()
+    {
+        spawnUnit("melee", 1);
+    }
+
+    public void spawnRangedUnitTierOne()
+    {
+        spawnUnit("ranged", 1);
+    }
+
+    public void spawnUnit(string type, int tier)
     {
         if (isPlayerOneTurn && unitTileInstances[(int)baseLocation1.x, (int)baseLocation1.y] == null && player1Funds - 1000 >= 0)
         {
-            GameObject unitInstance = Instantiate(melee1) as GameObject;
+            GameObject unitInstance = null;
+            if (type == "ranged")
+            {
+                unitInstance = Instantiate(ranged1) as GameObject;
+                unitInstance.GetComponent<unit>().maxMoveDistance = 2;
+            }
+            else
+            {
+                unitInstance = Instantiate(melee1) as GameObject;
+                unitInstance.GetComponent<unit>().maxMoveDistance = 1;
+            }
             unitInstance.transform.position = new Vector3(baseLocation1.x, baseLocation1.y, -2);
             unitInstance.GetComponent<unit>().health = 100;
             unitInstance.GetComponent<unit>().maxHealth = 100;
-            unitInstance.GetComponent<unit>().typeOfUnit = "melee";
-            unitInstance.GetComponent<unit>().maxMoveDistance = 1;
+            unitInstance.GetComponent<unit>().typeOfUnit = type;
+            //unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             unitInstance.GetComponent<unit>().isPlayerOneUnit = true;
             unitInstance.GetComponent<unit>().unitWasMoved = false;
 
+
+            //unitInstance.GetComponent<Renderer>().material.color = new Color(0.5f, 0.5f, 1.0f);
+
             if (baseLocation1.x < (terrainSize.x / 2.0f)) {
                 unitInstance.GetComponent<unit>().lastFacingRight = true;
+                unitInstance.GetComponent<Animator>().SetTrigger("idleright");
             } else {
                 unitInstance.GetComponent<unit>().lastFacingRight = false;
+                unitInstance.GetComponent<Animator>().SetTrigger("idleleft");
             }
             unitTileInstances[(int)baseLocation1.x, (int)baseLocation1.y] = unitInstance;
             player1Funds -= 1000;
         } else if (!isPlayerOneTurn && unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] == null && player2Funds - 1000 >= 0) {
-            GameObject unitInstance = Instantiate(melee2) as GameObject;
+
+            GameObject unitInstance = null;
+            if (type == "ranged") { 
+                unitInstance = Instantiate(ranged2) as GameObject;
+                unitInstance.GetComponent<unit>().maxMoveDistance = 2;
+            }
+            else { 
+                unitInstance = Instantiate(melee2) as GameObject;
+                unitInstance.GetComponent<unit>().maxMoveDistance = 1;
+            }
             unitInstance.transform.position = new Vector3(baseLocation2.x, baseLocation2.y, -2);
             unitInstance.GetComponent<unit>().health = 100;
             unitInstance.GetComponent<unit>().maxHealth = 100;
-            unitInstance.GetComponent<unit>().typeOfUnit = "melee";
-            unitInstance.GetComponent<unit>().maxMoveDistance = 1;
+            unitInstance.GetComponent<unit>().typeOfUnit = type;
+            //unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             unitInstance.GetComponent<unit>().isPlayerOneUnit = false;
             unitInstance.GetComponent<unit>().unitWasMoved = false;
 
             if (baseLocation2.x < (terrainSize.x / 2.0f)) {
                 unitInstance.GetComponent<unit>().lastFacingRight = true;
+                unitInstance.GetComponent<Animator>().SetTrigger("idleright");
             } else {
                 unitInstance.GetComponent<unit>().lastFacingRight = false;
+                unitInstance.GetComponent<Animator>().SetTrigger("idleleft");
             }
             unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] = unitInstance;
             player2Funds -= 1000;
