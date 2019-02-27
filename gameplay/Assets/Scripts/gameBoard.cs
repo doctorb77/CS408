@@ -11,7 +11,8 @@ public class gameBoard : MonoBehaviour
 
     public string[,] terrainTileInstanceTypes = new string[10, 10];
     public GameObject[,] unitTileInstances = new GameObject[10, 10];
-    public Vector3 pz = new Vector3(-5.0f, 0.0f, 0.0f);
+
+    public Vector2 terrainSize = new Vector2(10.0f, 10.0f);
 
     public GameObject base1;
     public GameObject base2;
@@ -88,6 +89,7 @@ public class gameBoard : MonoBehaviour
 
     public void endTurn()
     {
+        
         isPlayerOneTurn = !isPlayerOneTurn;
 
         if (isPlayerOneTurn)
@@ -135,7 +137,12 @@ public class gameBoard : MonoBehaviour
             unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             unitInstance.GetComponent<unit>().isPlayerOneUnit = true;
             unitInstance.GetComponent<unit>().unitWasMoved = false;
-            unitInstance.GetComponent<unit>().lastFacingRight = true;
+
+            if (baseLocation1.x < (terrainSize.x / 2.0f)) {
+                unitInstance.GetComponent<unit>().lastFacingRight = true;
+            } else {
+                unitInstance.GetComponent<unit>().lastFacingRight = false;
+            }
             unitTileInstances[(int)baseLocation1.x, (int)baseLocation1.y] = unitInstance;
             player1Funds -= 1000;
         } else if (!isPlayerOneTurn && unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] == null && player2Funds - 1000 >= 0) {
@@ -147,7 +154,12 @@ public class gameBoard : MonoBehaviour
             unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             unitInstance.GetComponent<unit>().isPlayerOneUnit = false;
             unitInstance.GetComponent<unit>().unitWasMoved = false;
-            unitInstance.GetComponent<unit>().lastFacingRight = false;
+
+            if (baseLocation2.x < (terrainSize.x / 2.0f)) {
+                unitInstance.GetComponent<unit>().lastFacingRight = true;
+            } else {
+                unitInstance.GetComponent<unit>().lastFacingRight = false;
+            }
             unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] = unitInstance;
             player2Funds -= 1000;
         }
@@ -178,14 +190,17 @@ public class gameBoard : MonoBehaviour
                         return;
                     } else
                     {
-                        selectedUnit.transform.position = new Vector3(currMouseX, currMouseY, -2);
+                        //selectedUnit.transform.position = new Vector3(currMouseX, currMouseY, -2);
+                        Vector3 desiredPosition = new Vector3(currMouseX, currMouseY, -2);
+
+                        //transform.position = Vector3.MoveTowards(selectedUnit.transform.position, desiredPosition, 1.0f * Time.deltaTime);
+                        StartCoroutine(MovementCoroutine1(selectedUnit, desiredPosition));
+
                         unitTileInstances[(int)lastClicked.x, (int)lastClicked.y] = null;
                         
                         unitTileInstances[currMouseX, currMouseY] = selectedUnit;
-                        unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().unitWasMoved = true;
-                        unitTileInstances[currMouseX, currMouseY].GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.4f);
-                        unitTileInstances[currMouseX, currMouseY].GetComponent<Animator>().SetTrigger("idleleft");
-                        
+                        //unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().unitWasMoved = true;
+                        //unitTileInstances[currMouseX, currMouseY].GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.4f);
 
                         selectedUnit = null;
                         lastClicked.x = Mathf.Round((hit.point.x));
@@ -234,6 +249,96 @@ public class gameBoard : MonoBehaviour
                         return;
                     }
                 }
+            }
+        }
+    }
+
+    //move unit up/down first
+    public IEnumerator MovementCoroutine1(GameObject selectedUnit, Vector3 desiredPosition)
+    {
+        bool arrived = false;
+
+        Vector3 desiredPositionVertical = desiredPosition;
+        desiredPositionVertical.x = selectedUnit.transform.position.x;
+
+        if (desiredPosition.y - selectedUnit.transform.position.y > 0.0f)
+        {
+            selectedUnit.GetComponent<Animator>().SetTrigger("moveup");
+        } else if (desiredPosition.y - selectedUnit.transform.position.y < 0.0f)
+        {
+            selectedUnit.GetComponent<Animator>().SetTrigger("movedown");
+        } else
+        {
+            arrived = true;
+        }
+
+        while (!arrived)
+        {
+            selectedUnit.transform.position = Vector3.MoveTowards(selectedUnit.transform.position, desiredPositionVertical, 1.0f * Time.deltaTime);
+            if (Vector3.Distance(selectedUnit.transform.position, desiredPositionVertical) == 0) arrived = true;
+            yield return null;
+        }
+        if (arrived)
+        {
+            if (desiredPosition.x - selectedUnit.transform.position.x == 0.0f)
+            {
+                selectedUnit.GetComponent<unit>().unitWasMoved = true;
+                selectedUnit.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.4f);
+
+                if (selectedUnit.GetComponent<unit>().lastFacingRight == true)
+                {
+                    selectedUnit.GetComponent<Animator>().SetTrigger("idleright");
+                }
+                else
+                {
+                    selectedUnit.GetComponent<Animator>().SetTrigger("idleleft");
+                }
+            } else {
+                StartCoroutine(MovementCoroutine2(selectedUnit, desiredPosition));
+            }
+        }
+    }
+
+    //move unit left/right last
+    public IEnumerator MovementCoroutine2(GameObject selectedUnit, Vector3 desiredPosition)
+    {
+        bool arrived = false;
+
+        Vector3 desiredPositionHorizontal = desiredPosition;
+        desiredPositionHorizontal.y = selectedUnit.transform.position.y;
+
+        if (desiredPosition.x - selectedUnit.transform.position.x > 0.0f)
+        {
+            selectedUnit.GetComponent<Animator>().SetTrigger("moveright");
+            selectedUnit.GetComponent<unit>().lastFacingRight = true;
+        }
+        else if (desiredPosition.x - selectedUnit.transform.position.x < 0.0f)
+        {
+            selectedUnit.GetComponent<Animator>().SetTrigger("moveleft");
+            selectedUnit.GetComponent<unit>().lastFacingRight = false;
+        }
+        else
+        {
+            arrived = true;
+        }
+
+        while (!arrived)
+        {
+            selectedUnit.transform.position = Vector3.MoveTowards(selectedUnit.transform.position, desiredPositionHorizontal, 1.0f * Time.deltaTime);
+            if (Vector3.Distance(selectedUnit.transform.position, desiredPositionHorizontal) == 0) arrived = true;
+            yield return null;
+        }
+        if (arrived)
+        {
+            selectedUnit.GetComponent<unit>().unitWasMoved = true;
+            selectedUnit.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.4f);
+
+            if (selectedUnit.GetComponent<unit>().lastFacingRight == true)
+            {
+                selectedUnit.GetComponent<Animator>().SetTrigger("idleright");
+            } else
+            {
+                selectedUnit.GetComponent<Animator>().SetTrigger("idleleft");
             }
         }
     }
