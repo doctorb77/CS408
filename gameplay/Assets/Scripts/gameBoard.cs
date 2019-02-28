@@ -255,14 +255,20 @@ public class gameBoard : MonoBehaviour
                     }
                 }
                 //if player 1 moving to attack player 2 unit
-                else if (isPlayerOneTurn && !unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit) 
+                else if (isPlayerOneTurn && !unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit 
+                    && selectedUnit != null && selectedUnit.GetComponent<unit>().unitWasMoved == false) 
                 {
-
+                    StartCoroutine(CombatCoroutine(selectedUnit, unitTileInstances[currMouseX, currMouseY]));
+                    selectedUnit.GetComponent<unit>().unitWasMoved = true;
+                    selectedUnit = null;
                 }
                 //if player 2 moving to attack player 1 unit
-                else if (!isPlayerOneTurn && unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit)
+                else if (!isPlayerOneTurn && unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit 
+                    && selectedUnit != null && selectedUnit.GetComponent<unit>().unitWasMoved == false)
                 {
-
+                    selectedUnit.GetComponent<Animator>().SetTrigger("combatleft");
+                    selectedUnit.GetComponent<unit>().unitWasMoved = true;
+                    selectedUnit = null;
                 }
 
                 //select a unit
@@ -293,6 +299,34 @@ public class gameBoard : MonoBehaviour
                 }
             }
         }
+    }
+
+    //combat coroutine
+    public IEnumerator CombatCoroutine(GameObject attackingUnit, GameObject defendingUnit)
+    {
+
+        attackingUnit.GetComponent<Animator>().SetTrigger("combatright");
+
+        yield return new WaitForSeconds(3);
+
+        StartCoroutine(HurtCoroutine(attackingUnit, defendingUnit));
+    }
+
+    //
+    public IEnumerator HurtCoroutine(GameObject attackingUnit, GameObject defendingUnit)
+    {
+
+        attackingUnit.GetComponent<Animator>().SetTrigger("movedown");
+
+        //if health is above zero for attacking or defending unit, play hurt animation
+
+
+
+        //if health is below zero for attacking or defending unit, play death animation / delete unit
+
+
+
+        yield return null;
     }
 
     //move unit up/down first
