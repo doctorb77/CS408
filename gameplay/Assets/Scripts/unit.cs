@@ -6,6 +6,7 @@ public class unit : MonoBehaviour
 {
     public int health;
     public int maxHealth;
+    public int attack;
     public bool isPlayerOneUnit;
     public float defense;
     public string typeOfUnit;

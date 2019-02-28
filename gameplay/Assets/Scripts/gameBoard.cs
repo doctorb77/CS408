@@ -155,6 +155,8 @@ public class gameBoard : MonoBehaviour
             unitInstance.transform.position = new Vector3(baseLocation1.x, baseLocation1.y, -2);
             unitInstance.GetComponent<unit>().health = 100;
             unitInstance.GetComponent<unit>().maxHealth = 100;
+            unitInstance.GetComponent<unit>().defense = 1.0f;
+            unitInstance.GetComponent<unit>().attack = 10;
             unitInstance.GetComponent<unit>().typeOfUnit = type;
             //unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             unitInstance.GetComponent<unit>().isPlayerOneUnit = true;
@@ -186,6 +188,8 @@ public class gameBoard : MonoBehaviour
             unitInstance.transform.position = new Vector3(baseLocation2.x, baseLocation2.y, -2);
             unitInstance.GetComponent<unit>().health = 100;
             unitInstance.GetComponent<unit>().maxHealth = 100;
+            unitInstance.GetComponent<unit>().defense = 1.0f;
+            unitInstance.GetComponent<unit>().attack = 10;
             unitInstance.GetComponent<unit>().typeOfUnit = type;
             //unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             unitInstance.GetComponent<unit>().isPlayerOneUnit = false;
