@@ -7,6 +7,9 @@ using UnityEngine.SceneManagement;
 
 public class gameBoard : MonoBehaviour
 {
+    
+    
+
     public static gameBoard Instance { set; get; }
 
     public string[,] terrainTileInstanceTypes = new string[10, 10];
@@ -42,6 +45,8 @@ public class gameBoard : MonoBehaviour
 
     private void Start()
     {
+
+
         Instance = this;
 
         selectedUnit = null;
@@ -163,7 +168,7 @@ public class gameBoard : MonoBehaviour
             unitInstance.GetComponent<unit>().unitWasMoved = false;
 
 
-            //unitInstance.GetComponent<Renderer>().material.color = new Color(0.5f, 0.5f, 1.0f);
+            //unitInstance.GetComponent<Renderer>().material.color = new Color(0.5f, 1.0f, 0.5f);
 
             if (baseLocation1.x < (terrainSize.x / 2.0f)) {
                 unitInstance.GetComponent<unit>().lastFacingRight = true;
@@ -266,7 +271,7 @@ public class gameBoard : MonoBehaviour
                 else if (!isPlayerOneTurn && unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit 
                     && selectedUnit != null && selectedUnit.GetComponent<unit>().unitWasMoved == false)
                 {
-                    selectedUnit.GetComponent<Animator>().SetTrigger("combatleft");
+                    StartCoroutine(CombatCoroutine(selectedUnit, unitTileInstances[currMouseX, currMouseY]));
                     selectedUnit.GetComponent<unit>().unitWasMoved = true;
                     selectedUnit = null;
                 }
@@ -304,7 +309,7 @@ public class gameBoard : MonoBehaviour
     //combat coroutine
     public IEnumerator CombatCoroutine(GameObject attackingUnit, GameObject defendingUnit)
     {
-
+        //play combat animations
         attackingUnit.GetComponent<Animator>().SetTrigger("combatright");
 
         yield return new WaitForSeconds(3);
@@ -316,7 +321,18 @@ public class gameBoard : MonoBehaviour
     public IEnumerator HurtCoroutine(GameObject attackingUnit, GameObject defendingUnit)
     {
 
+        //exact out health and hurt animations and death animations if necessary
+
         attackingUnit.GetComponent<Animator>().SetTrigger("movedown");
+
+        for (var n = 0; n < 5; n++)
+        {
+            attackingUnit.GetComponent<Renderer>().enabled = true;
+            yield return new WaitForSeconds(0.1f);
+            attackingUnit.GetComponent<Renderer>().enabled = false;
+            yield return new WaitForSeconds(0.1f);
+        }
+        attackingUnit.GetComponent<Renderer>().enabled = true;
 
         //if health is above zero for attacking or defending unit, play hurt animation
 
