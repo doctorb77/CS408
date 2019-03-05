@@ -23,10 +23,14 @@ public class gameBoard : MonoBehaviour
     public GameObject terrain2;
     public GameObject terrain3;
     public GameObject terrain4;
-    public GameObject melee1;
-    public GameObject melee2;
-    public GameObject ranged1;
-    public GameObject ranged2;
+    public GameObject melee1tier1;
+    public GameObject melee1tier2;
+    public GameObject melee2tier1;
+    public GameObject melee2tier2;
+    public GameObject ranged1tier1;
+    public GameObject ranged2tier1;
+    public GameObject ranged1tier2;
+    public GameObject ranged2tier2;
 
     public GameObject selectedUnit;
     public GameObject lightBlueValidMoveTile;
@@ -137,9 +141,19 @@ public class gameBoard : MonoBehaviour
         spawnUnit("melee", 1);
     }
 
+    public void spawnMeleeUnitTierTwo()
+    {
+        spawnUnit("melee", 2);
+    }
+
     public void spawnRangedUnitTierOne()
     {
         spawnUnit("ranged", 1);
+    }
+
+    public void spawnRangedUnitTierTwo()
+    {
+        spawnUnit("ranged", 2);
     }
 
     public void spawnUnit(string type, int tier)
@@ -149,12 +163,19 @@ public class gameBoard : MonoBehaviour
             GameObject unitInstance = null;
             if (type == "ranged")
             {
-                unitInstance = Instantiate(ranged1) as GameObject;
+                if (tier == 1)
+                    unitInstance = Instantiate(ranged1tier1) as GameObject;
+                else if (tier == 2)
+                    unitInstance = Instantiate(ranged1tier2) as GameObject;
                 unitInstance.GetComponent<unit>().maxMoveDistance = 2;
             }
             else
             {
-                unitInstance = Instantiate(melee1) as GameObject;
+                if (tier == 1)
+                    unitInstance = Instantiate(melee1tier1) as GameObject;
+                else if (tier == 2)
+                    unitInstance = Instantiate(melee1tier2) as GameObject;
+
                 unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             }
             unitInstance.transform.position = new Vector3(baseLocation1.x, baseLocation1.y, -2);
@@ -183,11 +204,17 @@ public class gameBoard : MonoBehaviour
 
             GameObject unitInstance = null;
             if (type == "ranged") { 
-                unitInstance = Instantiate(ranged2) as GameObject;
+                if (tier == 1)
+                    unitInstance = Instantiate(ranged2tier1) as GameObject;
+                else if (tier == 2)
+                    unitInstance = Instantiate(ranged2tier2) as GameObject;
                 unitInstance.GetComponent<unit>().maxMoveDistance = 2;
             }
             else { 
-                unitInstance = Instantiate(melee2) as GameObject;
+                if (tier == 1)
+                    unitInstance = Instantiate(melee2tier1) as GameObject;
+                else if (tier == 2)
+                    unitInstance = Instantiate(melee2tier2) as GameObject;
                 unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             }
             unitInstance.transform.position = new Vector3(baseLocation2.x, baseLocation2.y, -2);
