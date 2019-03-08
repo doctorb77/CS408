@@ -7,16 +7,32 @@ using UnityEngine.SceneManagement;
 
 public class gameBoard : MonoBehaviour
 {
-    
-    
 
+
+    private int[] lengths = { 20 };
+    private int[] heights = { 15 };
     public static gameBoard Instance { set; get; }
+    private string[,] terrainTileInstanceTypes;
+    private GameObject[,] unitTileInstances;
 
-    public string[,] terrainTileInstanceTypes = new string[10, 10];
-    public GameObject[,] unitTileInstances = new GameObject[10, 10];
-
-    public Vector2 terrainSize = new Vector2(10.0f, 10.0f);
-
+    public Vector2 terrainSize = new Vector2(19.0f, 14.0f);
+    private string[] maps = {
+        "t1, t1, t1, t1, t1, t1, t1, t1, t1, t2, t2, t1, t1, t1, t1, t1, t1, t1, t1, t1, "+
+        "t1, t5, t3, t1, t1, t1, t4, t1, t1, t2, t2, t1, t1, t5, t1, t1, t1, t1, b2, t1, "+
+        "t1, t3, t1, t1, t1, t1, t1, t1, t1, t2, t2, t2, t1, t1, t1, t1, t3, t1, t1, t1, "+
+        "t1, t1, t1, t1, t3, t3, t1, t1, t1, t1, t2, t2, t1, t1, t1, t1, t1, t3, t1, t1, "+
+        "t1, t1, t1, t1, t3, t1, t1, t4, t1, t1, t1, t2, t2, t1, t1, t1, t1, t1, t1, t4, "+
+        "t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t2, t2, t1, t1, t1, t2, t2, t1, t1, "+
+        "t1, t1, t1, t1, t1, t1, t1, t1, t3, t1, t1, t1, t4, t1, t1, t1, t2, t2, t1, t1, "+
+        "t1, t1, t4, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t4, t1, t1, "+
+        "t1, t2, t2, t1, t1, t1, t1, t4, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, "+
+        "t1, t2, t2, t1, t1, t1, t1, t2, t2, t1, t1, t3, t1, t1, t1, t1, t1, t1, t1, t1, "+
+        "t4, t1, t1, t1, t1, t1, t1, t2, t2, t1, t1, t1, t1, t1, t3, t3, t1, t1, t1, t1, "+
+        "t1, t1, t3, t1, t1, t1, t1, t1, t2, t2, t1, t1, t4, t1, t1, t3, t1, t1, t1, t1, "+
+        "t1, t1, t1, t3, t1, t1, t1, t1, t2, t2, t2, t1, t1, t1, t1, t1, t1, t1, t3, t1, "+
+        "t1, b1, t1, t1, t1, t1, t5, t1, t1, t2, t2, t1, t1, t4, t1, t1, t1, t3, t5, t1, "+
+        "t1, t1, t1, t1, t1, t1, t1, t1, t1, t2, t2, t1, t1, t1, t1, t1, t1, t1, t1, t1"
+    };
     public GameObject base1;
     public GameObject base2;
     public GameObject terrain1;
@@ -53,18 +69,12 @@ public class gameBoard : MonoBehaviour
 
     private void Start()
     {
-
-
         Instance = this;
 
         selectedUnit = null;
 
-        for (int i = 0; i < 10; i++)
-            for (int j = 0; j < 10; j++)
-                unitTileInstances[i, j] = null;
-
         //load map
-        loadMap1();
+        loadMap();
 
         //initialize turn state
         isPlayerOneTurn = (UnityEngine.Random.value > 0.5f);
@@ -79,8 +89,77 @@ public class gameBoard : MonoBehaviour
         player1Funds = player2Funds = 5000;
     }
 
+
+    //Obtains the map string array for the player-selected map
+    public int getMapID() {
+        return PlayerPrefs.GetInt("mapID");
+    }
+
+    //Returns the width of the player-selected map
+    public int getMapLength(int mapID) {
+        switch (mapID) {
+            case 0:
+                return 20;
+        }
+        return -1;
+    }
+
+    //Returns the Height of the player-selected map
+    public int getMapHeight(int mapID)
+    {
+        switch (mapID)
+        {
+            case 0:
+                return 15;
+        }
+        return -1;
+    }
+
+    public void loadMap() {
+        int index = 0; //Index variable to keep track of where in the map we are
+        int mapID = getMapID(); //Retrieve the player-selected mapID
+        int mapLength = getMapLength(mapID); //Retrieve the length of the player selected map
+        int mapHeight = getMapHeight(mapID); //Retrieve the height of the player selected map
+        string map = maps[mapID]; //Get the map string for the selected map using the mapID
+        map = map.Replace(" ", "");
+        
+        string[] x = map.Split(','); //Turn the map string into an array of tiles, so we can load them in individually using the index variable
+        Array.Reverse(x);
+        string[,] t = new string[mapLength, mapHeight];
+        string test = "";
+
+        //The columns loop has to be on the outside, since the string is going to the next tile to the right every time we need to make sure length is the one incremented every time
+        for (int j = 0; j < mapHeight; j++)
+        {
+           for (int i = 0; i < mapLength; i++)
+           {
+                t[i,j] = x[index];
+                test += x[index];
+                index++;
+           }
+            Debug.Log(test);
+            test = "";
+        }
+        for (int i = 0; i < mapHeight; i++) {
+            
+        }
+        for (int j = 0; j < mapHeight; j += 1)
+            {
+                    Debug.Log(t[0, j] + ", " + t[1, j] + ", " + t[2, j] + ", " + t[3, j] + ", " + t[4, j] + ", " + t[5, j] + ", " + t[6, j] + ", " + t[7, j] + ", " + t[8, j] + ", " + t[9, j] + ", " + t[10, j] + ", " + t[11, j] + ", " + t[12, j] + ", " + t[13, j] + ", " + t[14, j] + ", " + t[15, j] + ", " + t[16, j] + ", " + t[17, j] + ", " + t[18, j] + ", " + t[19, j]);
+            }
+        terrainTileInstanceTypes = new string[mapLength, mapHeight];
+        unitTileInstances = new GameObject[mapLength, mapHeight];
+
+
+        for (int i = 0; i < mapLength; i++)
+            for (int j = 0; j < mapHeight; j++)
+                unitTileInstances[i, j] = null;
+
+        initializeTerrain(t, mapLength, mapHeight);
+    }
     public void loadMap1()
     {
+        loadMap();
         string[,] t = new string[10, 10];
 
         //t1 = regular tile
@@ -99,7 +178,7 @@ public class gameBoard : MonoBehaviour
         t[0, 1] = "t1"; t[1, 1] = "b1"; t[2, 1] = "t1"; t[3, 1] = "t1"; t[4, 1] = "t3"; t[5, 1] = "t1"; t[6, 1] = "t1"; t[7, 1] = "t1"; t[8, 1] = "t2"; t[9, 1] = "t1";
         t[0, 0] = "t1"; t[1, 0] = "t1"; t[2, 0] = "t1"; t[3, 0] = "t1"; t[4, 0] = "t3"; t[5, 0] = "t1"; t[6, 0] = "t1"; t[7, 0] = "t1"; t[8, 0] = "t1"; t[9, 0] = "t1";
     
-        initializeTerrain(t);
+        //initializeTerrain(t);
     }
 
     public void endTurn()
@@ -619,12 +698,14 @@ public class gameBoard : MonoBehaviour
         }
     }
 
-    private void initializeTerrain(string[,] terrainInput)
+    private void initializeTerrain(string[,] terrainInput, int mapLength, int mapHeight)
     {
-        for (int i = 0; i < 10; i++)
+
+        for (int i = 0; i < mapLength; i++)
         {
-            for (int j = 0; j < 10; j++)
+            for (int j = 0; j < mapHeight; j++)
             {
+
                 this.terrainTileInstanceTypes[i, j] = terrainInput[i, j];
 
                 if (terrainInput[i,j] == "t1")
