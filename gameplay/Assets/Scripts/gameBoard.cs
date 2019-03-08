@@ -205,7 +205,6 @@ public class gameBoard : MonoBehaviour
             unitInstance.GetComponent<unit>().isPlayerOneUnit = true;
             unitInstance.GetComponent<unit>().unitWasMoved = false;
 
-
             //unitInstance.GetComponent<Renderer>().material.color = new Color(0.5f, 1.0f, 0.5f);
 
             if (baseLocation1.x < (terrainSize.x / 2.0f)) {
@@ -272,8 +271,6 @@ public class gameBoard : MonoBehaviour
                 int currMouseX = (int)Mathf.Round((hit.point.x));
                 int currMouseY = (int)Mathf.Round((hit.point.y));
 
-                Debug.Log(lastClicked);
-
                 //if spot is empty move selected unit there
                 if (unitTileInstances[currMouseX, currMouseY] == null)
                 {
@@ -312,16 +309,36 @@ public class gameBoard : MonoBehaviour
                     && selectedUnit != null && selectedUnit.GetComponent<unit>().unitWasMoved == false) 
                 {
                     StartCoroutine(CombatCoroutine(selectedUnit, unitTileInstances[currMouseX, currMouseY]));
+
+                    //if health is below zero for unit, play death animation / delete unit
+
+                    //if (unit.GetComponent<unit>().health <= 0)
+                    //{
+                        //play death animation
+
+                    //}
+
                     selectedUnit.GetComponent<unit>().unitWasMoved = true;
                     selectedUnit = null;
+                    eraseValidMoveTiles();
                 }
                 //if player 2 moving to attack player 1 unit
                 else if (!isPlayerOneTurn && unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit 
                     && selectedUnit != null && selectedUnit.GetComponent<unit>().unitWasMoved == false)
                 {
                     StartCoroutine(CombatCoroutine(selectedUnit, unitTileInstances[currMouseX, currMouseY]));
+
+                    //if health is below zero for unit, play death animation / delete unit
+
+                    //if (unit.GetComponent<unit>().health <= 0)
+                    //{
+                        //play death animation
+
+                    //}
+
                     selectedUnit.GetComponent<unit>().unitWasMoved = true;
                     selectedUnit = null;
+                    eraseValidMoveTiles();
                 }
 
                 //select a unit
@@ -354,40 +371,123 @@ public class gameBoard : MonoBehaviour
         }
     }
 
+    public bool isDefendingWithinAttacking(GameObject attackingUnit, GameObject defendingUnit)
+    {
+        bool defendingUnitWithinRange = false;
+        if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee")
+        {
+            if (defendingUnit.transform.position.x == attackingUnit.transform.position.x - 1 && defendingUnit.transform.position.y == attackingUnit.transform.position.y)
+            {
+                defendingUnitWithinRange = true;
+            }
+            else if (defendingUnit.transform.position.x == attackingUnit.transform.position.x + 1 && defendingUnit.transform.position.y == attackingUnit.transform.position.y)
+            {
+                defendingUnitWithinRange = true;
+            }
+            else if (defendingUnit.transform.position.x == attackingUnit.transform.position.x && defendingUnit.transform.position.y == attackingUnit.transform.position.y + 1)
+            {
+                defendingUnitWithinRange = true;
+            }
+            else if (defendingUnit.transform.position.x == attackingUnit.transform.position.x && defendingUnit.transform.position.y == attackingUnit.transform.position.y - 1)
+            {
+                defendingUnitWithinRange = true;
+            }
+        }
+        else if (attackingUnit.GetComponent<unit>().typeOfUnit == "ranged")
+        {
+            if (Math.Abs(defendingUnit.transform.position.x - attackingUnit.transform.position.x) <= attackingUnit.GetComponent<unit>().maxMoveDistance &&
+                Math.Abs(defendingUnit.transform.position.y - attackingUnit.transform.position.y) <= attackingUnit.GetComponent<unit>().maxMoveDistance)
+            {
+                defendingUnitWithinRange = true;
+            }
+        }
+
+        return defendingUnitWithinRange;
+    }
+
     //combat coroutine
     public IEnumerator CombatCoroutine(GameObject attackingUnit, GameObject defendingUnit)
     {
-        //play combat animations
-        attackingUnit.GetComponent<Animator>().SetTrigger("combatright");
+        //if defending unit is not within range of attack unit, break
+        bool defendingUnitWithinRange = isDefendingWithinAttacking(attackingUnit, defendingUnit);
+        if (defendingUnitWithinRange == false)
+        {
+            yield break;
+        }
 
-        yield return new WaitForSeconds(3);
 
-        StartCoroutine(HurtCoroutine(attackingUnit, defendingUnit));
+        if ((defendingUnit.transform.position.y - attackingUnit.transform.position.y) >= Math.Abs(defendingUnit.transform.position.x - attackingUnit.transform.position.x))
+        {
+            attackingUnit.GetComponent<Animator>().SetTrigger("combatup");
+        }
+        else if ((attackingUnit.transform.position.y - defendingUnit.transform.position.y) >= Math.Abs(defendingUnit.transform.position.x - attackingUnit.transform.position.x))
+        {
+            attackingUnit.GetComponent<Animator>().SetTrigger("combatdown");
+        }
+        else if ((attackingUnit.transform.position.x - defendingUnit.transform.position.x) >= Math.Abs(defendingUnit.transform.position.y - attackingUnit.transform.position.y))
+        {
+            attackingUnit.GetComponent<Animator>().SetTrigger("combatleft");
+        }
+        else if ((defendingUnit.transform.position.x - attackingUnit.transform.position.x) >= Math.Abs(defendingUnit.transform.position.y - attackingUnit.transform.position.y))
+        {
+            attackingUnit.GetComponent<Animator>().SetTrigger("combatright");
+        }
+
+
+
+        //if attackingUnit is within defendingUnit range, play defendingUnit combat animation
+        bool attackingUnitWithinRange = isDefendingWithinAttacking(defendingUnit, attackingUnit);
+        if (attackingUnitWithinRange)
+        {
+            if ((attackingUnit.transform.position.y - defendingUnit.transform.position.y) >= Math.Abs(attackingUnit.transform.position.x - defendingUnit.transform.position.x))
+            {
+                defendingUnit.GetComponent<Animator>().SetTrigger("combatup");
+            }
+            else if ((defendingUnit.transform.position.y - attackingUnit.transform.position.y) >= Math.Abs(attackingUnit.transform.position.x - defendingUnit.transform.position.x))
+            {
+                    defendingUnit.GetComponent<Animator>().SetTrigger("combatdown");
+            }
+            else if ((defendingUnit.transform.position.x - attackingUnit.transform.position.x) >= Math.Abs(attackingUnit.transform.position.y - defendingUnit.transform.position.y))
+            {
+                    defendingUnit.GetComponent<Animator>().SetTrigger("combatleft");
+            }
+            else if ((attackingUnit.transform.position.x - defendingUnit.transform.position.x) >= Math.Abs(attackingUnit.transform.position.y - defendingUnit.transform.position.y))
+            {
+                    defendingUnit.GetComponent<Animator>().SetTrigger("combatright");
+            }
+        }
+
+
+
+        yield return new WaitForSeconds(2);
+
+        
+        if (defendingUnitWithinRange)
+        {
+            StartCoroutine(HurtCoroutine(defendingUnit, attackingUnit.GetComponent<unit>().attack));
+        }
+
+        if (attackingUnitWithinRange)
+        {
+            StartCoroutine(HurtCoroutine(attackingUnit, defendingUnit.GetComponent<unit>().attack));
+        }
     }
 
-    //
-    public IEnumerator HurtCoroutine(GameObject attackingUnit, GameObject defendingUnit)
+    public IEnumerator HurtCoroutine(GameObject unit, int damageTaken)
     {
 
-        //exact out health and hurt animations and death animations if necessary
-
-        attackingUnit.GetComponent<Animator>().SetTrigger("movedown");
+        //if health is above zero for unit, play hurt animation
 
         for (var n = 0; n < 5; n++)
         {
-            attackingUnit.GetComponent<Renderer>().enabled = true;
+            unit.GetComponent<Renderer>().enabled = true;
             yield return new WaitForSeconds(0.1f);
-            attackingUnit.GetComponent<Renderer>().enabled = false;
+            unit.GetComponent<Renderer>().enabled = false;
             yield return new WaitForSeconds(0.1f);
         }
-        attackingUnit.GetComponent<Renderer>().enabled = true;
+        unit.GetComponent<Renderer>().enabled = true;
 
-        //if health is above zero for attacking or defending unit, play hurt animation
-
-
-
-        //if health is below zero for attacking or defending unit, play death animation / delete unit
-
+        unit.GetComponent<unit>().health -= damageTaken;
 
 
         yield return null;

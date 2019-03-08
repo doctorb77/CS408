@@ -14,4 +14,12 @@ public class healthBar : MonoBehaviour
         localScale.x = this.GetComponentInParent<unit>().health / (float)this.GetComponentInParent<unit>().maxHealth;
         transform.localScale = localScale;
     }
+
+    void Update()
+    {
+        localScale = transform.localScale;
+
+        localScale.x = this.GetComponentInParent<unit>().health / (float)this.GetComponentInParent<unit>().maxHealth;
+        transform.localScale = localScale;
+    }
 }
