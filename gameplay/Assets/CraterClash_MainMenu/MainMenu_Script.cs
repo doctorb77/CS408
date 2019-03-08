@@ -14,14 +14,12 @@ public class MainMenu_Script : MonoBehaviour
     public GameObject panel_scores;
     public GameObject panel_options;
     public GameObject panel_credits;
+    public GameObject panel_tutorial;
+    public GameObject panel_submitScores;
     public VideoGlitches.VideoGlitchSpectrumOffset glitch_script;
     public float glitch_length;
 
     public GameObject panel_curr; //current panel
-
-    /*******************************************************************************/
-    /*******************************************************************************/
-    //ALL THAT YOU NEED TO EDIT IS HERE (YOU DON'T HAVE TO EDIT ANYTHING ELSE IN THIS UNITY PROJECT):
 
     //Do not edit these arrays here, manually edit them in the Unity inspector
     //All these arrays are size n = number of prebuilt maps (you'll have to specify that)
@@ -45,6 +43,7 @@ public class MainMenu_Script : MonoBehaviour
         //Add your code here to start hosting the game. Parameters are already given for you to use as you please.
     }
 
+    //NOTE: FEATURE NO LONGER USED. IGNORE THIS FUNCTION.
     //this function gets an ip address, checks if the format is valid (e.g. "192.168.137.1" is okay but "sh2@hd" is not okay)
     //and returns true for valid or false for invalid.
     public bool panel_find_clean_address(string address)
@@ -62,6 +61,7 @@ public class MainMenu_Script : MonoBehaviour
         return true;
     }
 
+    //NOTE: FEATURE NO LONGER USED. IGNORE THIS FUNCTION.
     //this function will attempt to join a game given an address. If fails then do nothing.
     public bool panel_find_start(string address)
     {
@@ -70,9 +70,6 @@ public class MainMenu_Script : MonoBehaviour
 
         return true;
     }
-
-    /*******************************************************************************/
-    /*******************************************************************************/
 
     void Start()
     {
@@ -95,7 +92,7 @@ public class MainMenu_Script : MonoBehaviour
 
     public void buttons_main_menu(int i)
     {
-        if (i < 5) //Any button except Quit was pressed
+        if (i < 5 || i == 7) //Any button except Quit was pressed
         {
             panel_main.SetActive(false);
         }
@@ -124,6 +121,14 @@ public class MainMenu_Script : MonoBehaviour
                 break;
             case 5: //Quit
                 Application.Quit();
+                break;
+            case 6: //Tutorial
+                panel_tutorial.SetActive(true);
+                panel_curr = panel_tutorial;
+                break;
+            case 7: //submitScores
+                panel_submitScores.SetActive(true);
+                panel_curr = panel_submitScores;
                 break;
             default:
                 Debug.LogError("CRITICAL ERROR: buttons_main_menu()");
