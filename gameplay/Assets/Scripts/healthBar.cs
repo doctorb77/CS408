@@ -9,9 +9,11 @@ public class healthBar : MonoBehaviour
 
     void Start()
     {
+        //transform.position = new Vector3(transform.position.x + 0.1f, transform.position.y, transform.position.z);
+
         localScale = transform.localScale;
 
-        localScale.x = this.GetComponentInParent<unit>().health / (float)this.GetComponentInParent<unit>().maxHealth;
+        localScale.x = (this.GetComponentInParent<unit>().health / (float)this.GetComponentInParent<unit>().maxHealth) * 0.75f;
         transform.localScale = localScale;
     }
 
@@ -19,7 +21,7 @@ public class healthBar : MonoBehaviour
     {
         localScale = transform.localScale;
 
-        localScale.x = this.GetComponentInParent<unit>().health / (float)this.GetComponentInParent<unit>().maxHealth;
+        localScale.x = (this.GetComponentInParent<unit>().health / (float)this.GetComponentInParent<unit>().maxHealth) * 0.75f;
         transform.localScale = localScale;
     }
 }

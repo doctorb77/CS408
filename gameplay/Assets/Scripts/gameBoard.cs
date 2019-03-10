@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public class gameBoard : MonoBehaviour
 {
@@ -38,6 +39,7 @@ public class gameBoard : MonoBehaviour
     public GameObject spawnMenu;
 
     public GameObject explosion;
+    public GameObject hurtText;
 
     private Vector2 lastClicked;
     private Vector2 baseLocation1;
@@ -49,6 +51,8 @@ public class gameBoard : MonoBehaviour
     public Text fundsTextBox;
     public GameObject showPlayer1Turn;
     public GameObject showPlayer2Turn;
+    public GameObject showPlayer1UnitSelection;
+    public GameObject showPlayer2UnitSelection;
 
     private int score;
 
@@ -77,7 +81,10 @@ public class gameBoard : MonoBehaviour
             //load map
             loadMap1();
         //}
-        
+
+        PlayerPrefs.SetInt("mapwidth", 10);
+        PlayerPrefs.SetInt("mapheight", 10);
+
 
         Instance = this;
 
@@ -97,8 +104,21 @@ public class gameBoard : MonoBehaviour
         spawnMenu.SetActive(false);
         victoryPanel.SetActive(false);
 
+        showPlayer1UnitSelection.SetActive(false);
+        showPlayer2UnitSelection.SetActive(false);
+
         //initialize default values
         player1Funds = player2Funds = 5000;
+
+        if (isPlayerOneTurn)
+        {
+            showPlayer1UnitSelection.SetActive(true);
+        }
+        else
+        {
+            showPlayer2UnitSelection.SetActive(true);
+        }
+
     }
 
     public void loadMap1()
@@ -140,11 +160,15 @@ public class gameBoard : MonoBehaviour
 
         if (isPlayerOneTurn)
         {
+            showPlayer1UnitSelection.SetActive(true);
+            showPlayer2UnitSelection.SetActive(false);
             player1Funds += 1000;
             StartCoroutine(displayPlayer1Turn());
         }
         else
         {
+            showPlayer2UnitSelection.SetActive(true);
+            showPlayer1UnitSelection.SetActive(false);
             player2Funds += 1000;
             StartCoroutine(displayPlayer2Turn());
         }
@@ -154,6 +178,7 @@ public class gameBoard : MonoBehaviour
 
     private IEnumerator displayPlayer1Turn()
     {
+        showPlayer2Turn.SetActive(false);
         showPlayer1Turn.SetActive(true);
         yield return new WaitForSeconds(3);
         showPlayer1Turn.SetActive(false);
@@ -161,6 +186,7 @@ public class gameBoard : MonoBehaviour
 
     private IEnumerator displayPlayer2Turn()
     {
+        showPlayer1Turn.SetActive(false);
         showPlayer2Turn.SetActive(true);
         yield return new WaitForSeconds(3);
         showPlayer2Turn.SetActive(false);
@@ -180,70 +206,108 @@ public class gameBoard : MonoBehaviour
 
     public void spawnMeleeUnitTierOne()
     {
-        spawnUnit("melee", 1);
+        spawnUnit("melee", 1, 1000);
     }
 
     public void spawnMeleeUnitTierTwo()
     {
-        spawnUnit("melee", 2);
+        spawnUnit("melee", 2, 2000);
     }
 
     public void spawnMeleeUnitTierThree()
     {
-        spawnUnit("melee", 3);
+        spawnUnit("melee", 3, 3000);
     }
 
     public void spawnRangedUnitTierOne()
     {
-        spawnUnit("ranged", 1);
+        spawnUnit("ranged", 1, 1000);
     }
 
     public void spawnRangedUnitTierTwo()
     {
-        spawnUnit("ranged", 2);
+        spawnUnit("ranged", 2, 2000);
     }
 
     public void spawnRangedUnitTierThree()
     {
-        spawnUnit("ranged", 3);
+        spawnUnit("ranged", 3, 3000);
     }
 
-    public void spawnUnit(string type, int tier)
+    public void spawnUnit(string type, int tier, int cost)
     {
-        if (isPlayerOneTurn && unitTileInstances[(int)baseLocation1.x, (int)baseLocation1.y] == null && player1Funds - 1000 >= 0)
+        if (isPlayerOneTurn && unitTileInstances[(int)baseLocation1.x, (int)baseLocation1.y] == null && player1Funds - cost >= 0)
         {
             GameObject unitInstance = null;
             if (type == "ranged")
             {
                 if (tier == 1)
+                {
                     unitInstance = Instantiate(ranged1tier1) as GameObject;
+                    unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f);
+                    unitInstance.GetComponent<unit>().maxMoveDistance = 2;
+                    unitInstance.GetComponent<unit>().health = 100;
+                    unitInstance.GetComponent<unit>().maxHealth = 100;
+                    unitInstance.GetComponent<unit>().attack = 20;
+                    unitInstance.GetComponent<unit>().tier = 1;
+                }
                 else if (tier == 2)
+                {
                     unitInstance = Instantiate(ranged1tier2) as GameObject;
+                    unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 1.0f);
+                    unitInstance.GetComponent<unit>().maxMoveDistance = 2;
+                    unitInstance.GetComponent<unit>().health = 300;
+                    unitInstance.GetComponent<unit>().maxHealth = 300;
+                    unitInstance.GetComponent<unit>().attack = 50;
+                    unitInstance.GetComponent<unit>().tier = 2;
+                }
                 else if (tier == 3)
+                {
                     unitInstance = Instantiate(ranged1tier3) as GameObject;
-                unitInstance.GetComponent<unit>().maxMoveDistance = 2;
+                    unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 1.0f);
+                    unitInstance.GetComponent<unit>().maxMoveDistance = 3;
+                    unitInstance.GetComponent<unit>().health = 500;
+                    unitInstance.GetComponent<unit>().maxHealth = 500;
+                    unitInstance.GetComponent<unit>().attack = 90;
+                    unitInstance.GetComponent<unit>().tier = 3;
+                }
             }
             else
             {
                 if (tier == 1)
+                {
                     unitInstance = Instantiate(melee1tier1) as GameObject;
+                    unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f);
+                    unitInstance.GetComponent<unit>().health = 100;
+                    unitInstance.GetComponent<unit>().maxHealth = 100;
+                    unitInstance.GetComponent<unit>().attack = 20;
+                    unitInstance.GetComponent<unit>().tier = 1;
+                }
                 else if (tier == 2)
+                {
                     unitInstance = Instantiate(melee1tier2) as GameObject;
+                    unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 1.0f);
+                    unitInstance.GetComponent<unit>().health = 300;
+                    unitInstance.GetComponent<unit>().maxHealth = 300;
+                    unitInstance.GetComponent<unit>().attack = 50;
+                    unitInstance.GetComponent<unit>().tier = 2;
+                }
                 else if (tier == 3)
+                {
                     unitInstance = Instantiate(melee1tier3) as GameObject;
+                    unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 1.0f);
+                    unitInstance.GetComponent<unit>().health = 500;
+                    unitInstance.GetComponent<unit>().maxHealth = 500;
+                    unitInstance.GetComponent<unit>().attack = 90;
+                    unitInstance.GetComponent<unit>().tier = 3;
+                }
                 unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             }
             unitInstance.transform.position = new Vector3(baseLocation1.x, baseLocation1.y, -2);
-            unitInstance.GetComponent<unit>().health = 100;
-            unitInstance.GetComponent<unit>().maxHealth = 100;
-            unitInstance.GetComponent<unit>().defense = 1.0f;
-            unitInstance.GetComponent<unit>().attack = 20;
+        
             unitInstance.GetComponent<unit>().typeOfUnit = type;
-            //unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             unitInstance.GetComponent<unit>().isPlayerOneUnit = true;
             unitInstance.GetComponent<unit>().unitWasMoved = false;
-
-            //unitInstance.GetComponent<Renderer>().material.color = new Color(0.5f, 1.0f, 0.5f);
 
             if (baseLocation1.x < (terrainSize.x / 2.0f)) {
                 unitInstance.GetComponent<unit>().lastFacingRight = true;
@@ -253,35 +317,76 @@ public class gameBoard : MonoBehaviour
                 unitInstance.GetComponent<Animator>().SetTrigger("idleleft");
             }
             unitTileInstances[(int)baseLocation1.x, (int)baseLocation1.y] = unitInstance;
-            player1Funds -= 1000;
+            player1Funds -= cost;
         } else if (!isPlayerOneTurn && unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] == null && player2Funds - 1000 >= 0) {
 
             GameObject unitInstance = null;
-            if (type == "ranged") { 
+            if (type == "ranged") {
                 if (tier == 1)
+                {
                     unitInstance = Instantiate(ranged2tier1) as GameObject;
+                    unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f);
+                    unitInstance.GetComponent<unit>().maxMoveDistance = 2;
+                    unitInstance.GetComponent<unit>().health = 100;
+                    unitInstance.GetComponent<unit>().maxHealth = 100;
+                    unitInstance.GetComponent<unit>().attack = 20;
+                    unitInstance.GetComponent<unit>().tier = 1;
+                }
                 else if (tier == 2)
+                {
                     unitInstance = Instantiate(ranged2tier2) as GameObject;
+                    unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 1.0f);
+                    unitInstance.GetComponent<unit>().maxMoveDistance = 2;
+                    unitInstance.GetComponent<unit>().health = 300;
+                    unitInstance.GetComponent<unit>().maxHealth = 300;
+                    unitInstance.GetComponent<unit>().attack = 50;
+                    unitInstance.GetComponent<unit>().tier = 2;
+                }
                 else if (tier == 3)
+                {
                     unitInstance = Instantiate(ranged2tier3) as GameObject;
-                unitInstance.GetComponent<unit>().maxMoveDistance = 2;
+                    unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 1.0f);
+                    unitInstance.GetComponent<unit>().maxMoveDistance = 3;
+                    unitInstance.GetComponent<unit>().health = 500;
+                    unitInstance.GetComponent<unit>().maxHealth = 500;
+                    unitInstance.GetComponent<unit>().attack = 90;
+                    unitInstance.GetComponent<unit>().tier = 3;
+                }
+                
             }
-            else { 
+            else {
                 if (tier == 1)
+                {
                     unitInstance = Instantiate(melee2tier1) as GameObject;
+                    unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f);
+                    unitInstance.GetComponent<unit>().health = 100;
+                    unitInstance.GetComponent<unit>().maxHealth = 100;
+                    unitInstance.GetComponent<unit>().attack = 20;
+                    unitInstance.GetComponent<unit>().tier = 1;
+                }
                 else if (tier == 2)
+                {
                     unitInstance = Instantiate(melee2tier2) as GameObject;
+                    unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 1.0f);
+                    unitInstance.GetComponent<unit>().health = 300;
+                    unitInstance.GetComponent<unit>().maxHealth = 300;
+                    unitInstance.GetComponent<unit>().attack = 50;
+                    unitInstance.GetComponent<unit>().tier = 2;
+                }
                 else if (tier == 3)
+                {
                     unitInstance = Instantiate(melee2tier3) as GameObject;
+                    unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 1.0f);
+                    unitInstance.GetComponent<unit>().health = 500;
+                    unitInstance.GetComponent<unit>().maxHealth = 500;
+                    unitInstance.GetComponent<unit>().attack = 90;
+                    unitInstance.GetComponent<unit>().tier = 3;
+                }
                 unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             }
             unitInstance.transform.position = new Vector3(baseLocation2.x, baseLocation2.y, -2);
-            unitInstance.GetComponent<unit>().health = 100;
-            unitInstance.GetComponent<unit>().maxHealth = 100;
-            unitInstance.GetComponent<unit>().defense = 1.0f;
-            unitInstance.GetComponent<unit>().attack = 20;
+
             unitInstance.GetComponent<unit>().typeOfUnit = type;
-            //unitInstance.GetComponent<unit>().maxMoveDistance = 1;
             unitInstance.GetComponent<unit>().isPlayerOneUnit = false;
             unitInstance.GetComponent<unit>().unitWasMoved = false;
 
@@ -293,7 +398,7 @@ public class gameBoard : MonoBehaviour
                 unitInstance.GetComponent<Animator>().SetTrigger("idleleft");
             }
             unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] = unitInstance;
-            player2Funds -= 1000;
+            player2Funds -= cost;
         }
 
         displaySpawnMenu();
@@ -425,6 +530,51 @@ public class gameBoard : MonoBehaviour
         SceneManager.LoadScene("Crater_Clash_MainMenu");
     }
 
+    public IEnumerator pause(float time)
+    {
+        yield return new WaitForSeconds(time);
+    }
+
+    public IEnumerator deleteAllUnitsAndShowVictoryPlayer1()
+    {
+        var units = GameObject.FindGameObjectsWithTag("unit");
+        foreach (GameObject obj in units)
+        {
+            GameObject explosionObject = Instantiate(explosion) as GameObject;
+            explosionObject.transform.position = new Vector3(obj.transform.position.x, obj.transform.position.y, -2);
+            Destroy(explosionObject, 1.0f);
+
+            StartCoroutine(pause(0.2f));
+
+            yield return new WaitForSeconds(0.1f);
+
+            Destroy(obj);
+        }
+
+        showPlayer1Victory.SetActive(true);
+        victoryPanel.SetActive(!victoryPanel.activeInHierarchy);
+    }
+
+    public IEnumerator deleteAllUnitsAndShowVictoryPlayer2()
+    {
+        var units = GameObject.FindGameObjectsWithTag("unit");
+        foreach (GameObject obj in units)
+        {
+            GameObject explosionObject = Instantiate(explosion) as GameObject;
+            explosionObject.transform.position = new Vector3(obj.transform.position.x, obj.transform.position.y, -2);
+            Destroy(explosionObject, 1.0f);
+
+            StartCoroutine(pause(0.2f));
+
+            yield return new WaitForSeconds(0.1f);
+
+            Destroy(obj);
+        }
+
+        showPlayer2Victory.SetActive(true);
+        victoryPanel.SetActive(!victoryPanel.activeInHierarchy);
+    }
+
     public void checkVictory()
     {
         if (checkingVictory)
@@ -437,9 +587,7 @@ public class gameBoard : MonoBehaviour
                 {
                     checkingVictory = false;
 
-                    showPlayer1Victory.SetActive(true);
-                    victoryPanel.SetActive(!victoryPanel.activeInHierarchy);
-
+                    StartCoroutine(deleteAllUnitsAndShowVictoryPlayer1());
                 }
             }
 
@@ -451,9 +599,7 @@ public class gameBoard : MonoBehaviour
                 {
                     checkingVictory = false;
 
-                    showPlayer2Victory.SetActive(true);
-                    victoryPanel.SetActive(!victoryPanel.activeInHierarchy);
-
+                    StartCoroutine(deleteAllUnitsAndShowVictoryPlayer2());
                 }
             }
         }
@@ -549,19 +695,57 @@ public class gameBoard : MonoBehaviour
 
         yield return new WaitForSeconds(2);
 
+        if (defendingUnit.GetComponent<unit>().lastFacingRight == true)
+        {
+            defendingUnit.GetComponent<Animator>().SetTrigger("idleright");
+        }
+        else
+        {
+            defendingUnit.GetComponent<Animator>().SetTrigger("idleleft");
+        }
+
+        if (attackingUnit.GetComponent<unit>().lastFacingRight == true)
+        {
+            attackingUnit.GetComponent<Animator>().SetTrigger("idleright");
+        }
+        else
+        {
+            attackingUnit.GetComponent<Animator>().SetTrigger("idleleft");
+        }
+
         
+        Random rnd = new Random();
+
         if (defendingUnitWithinRange)
         {
-            StartCoroutine(HurtCoroutine(defendingUnit, attackingUnit.GetComponent<unit>().attack));
+            int attack = attackingUnit.GetComponent<unit>().attack;
+
+            if (attackingUnit.GetComponent<unit>().tier == 1)
+                attack = attack + (Random.Range(-2, 2));
+            else if (attackingUnit.GetComponent<unit>().tier == 3)
+                attack = attack + (Random.Range(-5, 5));
+            else if (attackingUnit.GetComponent<unit>().tier == 3)
+                attack = attack + (Random.Range(-10, 10));
+
+            StartCoroutine(HurtCoroutine(attackingUnit, defendingUnit, attack));
         }
 
         if (attackingUnitWithinRange)
         {
-            StartCoroutine(HurtCoroutine(attackingUnit, defendingUnit.GetComponent<unit>().attack));
+            int attack = attackingUnit.GetComponent<unit>().attack;
+
+            if (attackingUnit.GetComponent<unit>().tier == 1)
+                attack = attack + (Random.Range(-2, 2));
+            else if (attackingUnit.GetComponent<unit>().tier == 3)
+                attack = attack + (Random.Range(-5, 5));
+            else if (attackingUnit.GetComponent<unit>().tier == 3)
+                attack = attack + (Random.Range(-10, 10));
+
+            StartCoroutine(HurtCoroutine(defendingUnit, attackingUnit, attack));
         }
     }
 
-    public IEnumerator HurtCoroutine(GameObject unit, int damageTaken)
+    public IEnumerator HurtCoroutine(GameObject attackingUnit, GameObject unit, int damageTaken)
     {
 
         //if health is above zero for unit, play hurt animation
@@ -576,6 +760,19 @@ public class gameBoard : MonoBehaviour
         unit.GetComponent<Renderer>().enabled = true;
 
         unit.GetComponent<unit>().health -= damageTaken;
+
+        StartCoroutine(spawnAndMoveHurtNumber((int)unit.transform.position.x, (int)unit.transform.position.y, damageTaken));
+
+        if (isPlayerOneTurn && attackingUnit.GetComponent<unit>().isPlayerOneUnit)
+        {
+            Debug.Log("test");
+            attackingUnit.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.2f);
+        }
+        if (!isPlayerOneTurn && !attackingUnit.GetComponent<unit>().isPlayerOneUnit)
+        {
+            Debug.Log("test2");
+            attackingUnit.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.2f);
+        }
 
         if (unit.GetComponent<unit>().health <= 0)
         {
@@ -592,6 +789,34 @@ public class gameBoard : MonoBehaviour
         }
 
         yield return null;
+    }
+
+    public IEnumerator spawnAndMoveHurtNumber(int startX, int startY, int attackDamage)
+    {
+        GameObject gameObjectText = Instantiate(hurtText) as GameObject;
+
+
+        gameObjectText.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = "-" + attackDamage.ToString();
+        //gameObjectText.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().fontSize = 6;
+        //gameObjectText.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().color = new Color(1.0f, 0.0f, 0.0f);
+
+        bool arrived = false;
+
+        gameObjectText.transform.position = new Vector3(startX, startY, -2);
+
+        Vector3 desiredPositionVertical = new Vector3(gameObjectText.transform.position.x, gameObjectText.transform.position.y + 1.0f, -2.0f);
+
+        while (!arrived)
+        {
+            
+            gameObjectText.transform.position = Vector3.MoveTowards(gameObjectText.transform.position, desiredPositionVertical, 0.75f * Time.deltaTime);
+            if (Vector3.Distance(gameObjectText.transform.position, desiredPositionVertical) == 0) arrived = true;
+            yield return null;
+        }
+        if (arrived)
+        {
+            Destroy(gameObjectText);
+        }
     }
 
     //move unit up/down first
@@ -624,7 +849,15 @@ public class gameBoard : MonoBehaviour
             if (desiredPosition.x - selectedUnit.transform.position.x == 0.0f)
             {
                 selectedUnit.GetComponent<unit>().unitWasMoved = true;
-                selectedUnit.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.4f);
+                if (isPlayerOneTurn && selectedUnit.GetComponent<unit>().isPlayerOneUnit == true)
+                {
+                    selectedUnit.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.2f);
+                }
+
+                if (!isPlayerOneTurn && selectedUnit.GetComponent<unit>().isPlayerOneUnit == false)
+                {
+                    selectedUnit.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.2f);
+                }
 
                 if (selectedUnit.GetComponent<unit>().lastFacingRight == true)
                 {
@@ -672,7 +905,15 @@ public class gameBoard : MonoBehaviour
         if (arrived)
         {
             selectedUnit.GetComponent<unit>().unitWasMoved = true;
-            selectedUnit.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.4f);
+            if (isPlayerOneTurn && selectedUnit.GetComponent<unit>().isPlayerOneUnit == true)
+            {
+                selectedUnit.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.2f);
+            }
+
+            if (!isPlayerOneTurn && selectedUnit.GetComponent<unit>().isPlayerOneUnit == false)
+            {
+                selectedUnit.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.2f);
+            }
 
             if (selectedUnit.GetComponent<unit>().lastFacingRight == true)
             {
