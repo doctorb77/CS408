@@ -85,7 +85,17 @@ public class MainMenu_Script : MonoBehaviour
             panel_main.SetActive(false);
             panel_submitScores.SetActive(true);
             panel_curr = panel_submitScores;
-        } else
+        }
+        else if (PlayerPrefs.GetInt("score") == 0 && PlayerPrefs.HasKey("scoreWasSubmitted") && PlayerPrefs.GetInt("scoreWasSubmitted") == 1)
+        {
+            Debug.Log("testing after score scene!");
+            PlayerPrefs.SetInt("scoreWasSubmitted", 0);
+            panel_submitScores.SetActive(false);
+            panel_main.SetActive(false);
+            panel_scores.SetActive(true);
+            panel_curr = panel_scores;
+        } 
+        else
         {
             PlayerPrefs.SetInt("score", 0);
             panel_curr = panel_main; //set main panel to be the current panel
@@ -146,9 +156,9 @@ public class MainMenu_Script : MonoBehaviour
                 panel_curr = panel_tutorial;
                 break;
             case 7: //submitScores
-                panel_submitScores.SetActive(true);
-                panel_curr = panel_submitScores;
-                break;
+                //panel_submitScores.SetActive(true);
+                //panel_curr = panel_submitScores;
+                //break;
             default:
                 Debug.LogError("CRITICAL ERROR: buttons_main_menu()");
                 break;

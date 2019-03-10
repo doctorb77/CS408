@@ -55,6 +55,10 @@ public class SubmitScore : MonoBehaviour
             //SceneManager.LoadScene("Scoreboard");
             finalScore = 0;
             score.text = finalScore.ToString();
+
+            PlayerPrefs.SetInt("score", 0);
+            PlayerPrefs.SetInt("scoreWasSubmitted", 1);
+            SceneManager.LoadScene("Crater_Clash_MainMenu");
         }
         else {
             // username cannot be empty
