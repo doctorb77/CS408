@@ -39,8 +39,40 @@ public class gameBoard : MonoBehaviour
         "t1, t3, t1, t2, t2, t1, t3, t1, " +
         "t1, t1, t1, t1, t1, t1, t1, t1, " +
         "t1, t4, t1, t3, t3, t1, b2, t1, " +
-        "t5, t1, t1, t1, t1, t1, t1, t5"
+        "t5, t1, t1, t1, t1, t1, t1, t5",
+
+        "t1, t1, t1, t1, t2, t2, t1, t1, t1, t1," +
+        "t1, t4, t1, t1, t2, t2, t1, t1, t4, t1," +
+        "t1, t1, t3, t1, t1, t1, t1, t3, t1, t1," +
+        "b1, t1, t3, t1, t4, t4, t1, t3, t1, b2," +
+        "t1, t1, t3, t1, t1, t1, t1, t3, t1, t1," +
+        "t4, t1, t1, t1, t1, t1, t1, t1, t1, t4," +
+        "t1, t1, t5, t1, t2, t2, t1, t5, t1, t1," +
+        "t1, t1, t1, t1, t2, t2, t1, t1, t1, t1",
+
+        "b1, t1, t4, t1, t5, t1, t1, t3, t1, t5," +
+        "t1, t1, t1, t1, t1, t1, t2, t2, t2, t1," +
+        "t1, t2, t2, t1, t3, t1, t2, t2, t2, t1," +
+        "t1, t2, t2, t3, t3, t1, t1, t1, t4, t1," +
+        "t1, t2, t2, t1, t4, t1, t1, t1, t1, t3," +
+        "t3, t1, t1, t1, t1, t4, t1, t2, t2, t1," +
+        "t1, t4, t1, t1, t1, t3, t3, t2, t2, t1," +
+        "t1, t2, t2, t2, t1, t3, t1, t2, t2, t1," +
+        "t1, t2, t2, t2, t1, t1, t1, t1, t1, t1," +
+        "t5, t1, t3, t1, t1, t5, t1, t4, t1, b2"
     };
+
+    public AudioSource buttonClick;
+    public AudioSource badButtonClick;
+    public AudioSource astronautRangedCombatTier1;
+    public AudioSource astronautRangedCombatTier2;
+    public AudioSource astronautRangedCombatTier3;
+
+    //https://opengameart.org/content/5-hit-sounds-dying
+
+    public AudioSource alienRangedCombatTier1;
+    public AudioSource alienRangedCombatTier2;
+    public AudioSource alienRangedCombatTier3;
 
     public GameObject base1;
     public GameObject base2;
@@ -109,6 +141,8 @@ public class gameBoard : MonoBehaviour
     public GameObject showPlayer1Victory;
     public GameObject showPlayer2Victory;
 
+    public GameObject askExitPanel;
+
     bool spawnMenuActive;
 
     int highlightMapWidth;
@@ -123,7 +157,8 @@ public class gameBoard : MonoBehaviour
         PlayerPrefs.SetInt("mapwidth", mapLength);
         PlayerPrefs.SetInt("mapheight", mapHeight);
 
-        highlightMapWidth = highlightMapHeight = 0;
+        highlightMapWidth = mapLength;
+        highlightMapHeight = mapHeight;
 
         checkingVictory = true;
         showPlayer1Victory.SetActive(false);
@@ -180,6 +215,12 @@ public class gameBoard : MonoBehaviour
 
     }
 
+    public void makeExitPanelVisible()
+    {
+        buttonClick.Play(0);
+        askExitPanel.SetActive(!askExitPanel.activeInHierarchy);
+    }
+
     //Obtains the map string array for the player-selected map
     public int getMapID()
     {
@@ -195,6 +236,10 @@ public class gameBoard : MonoBehaviour
                 return 20;
             case 1:
                 return 8;
+            case 2:
+                return 10;
+            case 3:
+                return 10;
         }
         return -1;
     }
@@ -207,6 +252,10 @@ public class gameBoard : MonoBehaviour
                 return 15;
             case 1:
                 return 8;
+            case 2:
+                return 8;
+            case 3:
+                return 10;
         }
         return -1;
     }
@@ -257,6 +306,8 @@ public class gameBoard : MonoBehaviour
 
     public void endTurn()
     {
+        buttonClick.Play(0);
+
         eraseValidMoveTiles();
 
         if (spawnMenuActive)
@@ -275,7 +326,10 @@ public class gameBoard : MonoBehaviour
             foreach (GameObject obj in units)
             {
                 if (terrainTileInstanceTypes[(int)obj.transform.position.x, (int)obj.transform.position.y] == "t5" && obj.GetComponent<unit>().isPlayerOneUnit == true)
+                {
                     player1Funds += 500;
+                    StartCoroutine(spawnAndMoveResourceNumber((int)obj.transform.position.x, (int)obj.transform.position.x, 500));
+                }
             }
 
 
@@ -290,7 +344,10 @@ public class gameBoard : MonoBehaviour
             foreach (GameObject obj in units)
             {
                 if (terrainTileInstanceTypes[(int)obj.transform.position.x, (int)obj.transform.position.y] == "t5" && obj.GetComponent<unit>().isPlayerOneUnit == false)
+                {
                     player2Funds += 500;
+                    StartCoroutine(spawnAndMoveResourceNumber((int)obj.transform.position.x, (int)obj.transform.position.x, 500));
+                }
             }
 
             showPlayer2UnitSelection.SetActive(true);
@@ -320,6 +377,8 @@ public class gameBoard : MonoBehaviour
 
     public void displaySpawnMenu()
     {
+        buttonClick.Play(0);
+
         spawnMenuActive = !spawnMenuActive;
         spawnMenu.SetActive(!spawnMenu.activeInHierarchy);
 
@@ -444,7 +503,10 @@ public class gameBoard : MonoBehaviour
             }
             unitTileInstances[(int)baseLocation1.x, (int)baseLocation1.y] = unitInstance;
             player1Funds -= cost;
-        } else if (!isPlayerOneTurn && unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] == null && player2Funds - 1000 >= 0) {
+
+            displaySpawnMenu();
+
+        } else if (!isPlayerOneTurn && unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] == null && player2Funds - cost >= 0) {
 
             GameObject unitInstance = null;
             if (type == "ranged") {
@@ -525,9 +587,12 @@ public class gameBoard : MonoBehaviour
             }
             unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] = unitInstance;
             player2Funds -= cost;
-        }
 
-        displaySpawnMenu();
+            displaySpawnMenu();
+        } else
+        {
+            badButtonClick.Play(0);
+        }
     }
 
     private void Update()
@@ -650,6 +715,8 @@ public class gameBoard : MonoBehaviour
 
     public void returnToMainMenu()
     {
+        buttonClick.Play(0);
+
         PlayerPrefs.SetInt("gameWasPlayed", 0);
         PlayerPrefs.SetInt("score", 0);
         SceneManager.LoadScene("Crater_Clash_MainMenu");
@@ -782,11 +849,11 @@ public class gameBoard : MonoBehaviour
 
         if (attackingUnit.GetComponent<unit>().isPlayerOneUnit)
         {
-            projectile = Instantiate(alienProjectile) as GameObject;
+            projectile = Instantiate(atronautProjectile) as GameObject;
         }
         else
         {
-            projectile = Instantiate(atronautProjectile) as GameObject;
+            projectile = Instantiate(alienProjectile) as GameObject;
         }
 
         //projectile.GetComponent<Animator>().SetTrigger("projectileAnimation");
@@ -796,7 +863,7 @@ public class gameBoard : MonoBehaviour
         Vector3 desiredPosition = defendingUnit.transform.position;
         desiredPosition.z = -3.0f;
 
-        if (Math.Abs(desiredPosition.y - attackingUnit.transform.position.y) <= 0.01f && Math.Abs(desiredPosition.y - attackingUnit.transform.position.y) <= 0.01f)
+        if (Math.Abs(desiredPosition.y - attackingUnit.transform.position.y) <= 0.01f && Math.Abs(desiredPosition.x - attackingUnit.transform.position.x) <= 0.01f)
         {
             arrived = true;
         }
@@ -824,7 +891,59 @@ public class gameBoard : MonoBehaviour
             yield break;
         }
 
+        //play attacker combat sounds if astronaut
+        if (attackingUnit.GetComponent<unit>().typeOfUnit == "ranged" && attackingUnit.GetComponent<unit>().tier == 1 && attackingUnit.GetComponent<unit>().isPlayerOneUnit)
+        {
+            astronautRangedCombatTier1.Play(0);
+        }
+        else if (attackingUnit.GetComponent<unit>().typeOfUnit == "ranged" && attackingUnit.GetComponent<unit>().tier == 2 && attackingUnit.GetComponent<unit>().isPlayerOneUnit)
+        {
+            astronautRangedCombatTier2.Play(0);
+        }
+        else if (attackingUnit.GetComponent<unit>().typeOfUnit == "ranged" && attackingUnit.GetComponent<unit>().tier == 3 && attackingUnit.GetComponent<unit>().isPlayerOneUnit)
+        {
+            astronautRangedCombatTier3.Play(0);
+        }
+        else if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && attackingUnit.GetComponent<unit>().tier == 1 && attackingUnit.GetComponent<unit>().isPlayerOneUnit)
+        {
+            //astronautRangedCombatTier1.Play(0);
+        }
+        else if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && attackingUnit.GetComponent<unit>().tier == 2 && attackingUnit.GetComponent<unit>().isPlayerOneUnit)
+        {
+            //astronautRangedCombatTier2.Play(0);
+        }
+        else if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && attackingUnit.GetComponent<unit>().tier == 3 && attackingUnit.GetComponent<unit>().isPlayerOneUnit)
+        {
+            //astronautRangedCombatTier3.Play(0);
+        }
 
+        //play attacker combat sounds if alien
+        if (attackingUnit.GetComponent<unit>().typeOfUnit == "ranged" && attackingUnit.GetComponent<unit>().tier == 1 && !attackingUnit.GetComponent<unit>().isPlayerOneUnit)
+        {
+            alienRangedCombatTier1.Play(0);
+        }
+        else if (attackingUnit.GetComponent<unit>().typeOfUnit == "ranged" && attackingUnit.GetComponent<unit>().tier == 2 && !attackingUnit.GetComponent<unit>().isPlayerOneUnit)
+        {
+            alienRangedCombatTier2.Play(0);
+        }
+        else if (attackingUnit.GetComponent<unit>().typeOfUnit == "ranged" && attackingUnit.GetComponent<unit>().tier == 3 && !attackingUnit.GetComponent<unit>().isPlayerOneUnit)
+        {
+            alienRangedCombatTier3.Play(0);
+        }
+        else if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && attackingUnit.GetComponent<unit>().tier == 1 && !attackingUnit.GetComponent<unit>().isPlayerOneUnit)
+        {
+            //astronautRangedCombatTier1.Play(0);
+        }
+        else if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && attackingUnit.GetComponent<unit>().tier == 2 && !attackingUnit.GetComponent<unit>().isPlayerOneUnit)
+        {
+            //astronautRangedCombatTier2.Play(0);
+        }
+        else if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && attackingUnit.GetComponent<unit>().tier == 3 && !attackingUnit.GetComponent<unit>().isPlayerOneUnit)
+        {
+            //astronautRangedCombatTier3.Play(0);
+        }
+
+        //play attacker animations
         if ((defendingUnit.transform.position.y - attackingUnit.transform.position.y) >= Math.Abs(defendingUnit.transform.position.x - attackingUnit.transform.position.x))
         {
             attackingUnit.GetComponent<Animator>().SetTrigger("combatup");
@@ -867,7 +986,9 @@ public class gameBoard : MonoBehaviour
         }
 
         if (attackingUnitWithinRange)
+        {
             StartCoroutine(projectileCoroutine(defendingUnit, attackingUnit));
+        }
 
         yield return new WaitForSeconds(2);
 
@@ -993,6 +1114,34 @@ public class gameBoard : MonoBehaviour
         while (!arrived)
         {
             
+            gameObjectText.transform.position = Vector3.MoveTowards(gameObjectText.transform.position, desiredPositionVertical, 0.75f * Time.deltaTime);
+            if (Vector3.Distance(gameObjectText.transform.position, desiredPositionVertical) == 0) arrived = true;
+            yield return null;
+        }
+        if (arrived)
+        {
+            Destroy(gameObjectText);
+        }
+    }
+
+    public IEnumerator spawnAndMoveResourceNumber(int startX, int startY, int resourceAmount)
+    {
+        GameObject gameObjectText = Instantiate(hurtText) as GameObject;
+
+
+        gameObjectText.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().text = "+" + resourceAmount.ToString();
+        gameObjectText.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().fontSize = 8;
+        gameObjectText.transform.GetChild(0).transform.GetChild(0).GetComponent<Text>().color = new Color(0.0f, 1.0f, 0.0f);
+
+        bool arrived = false;
+
+        gameObjectText.transform.position = new Vector3(startX, startY, -2);
+
+        Vector3 desiredPositionVertical = new Vector3(gameObjectText.transform.position.x, gameObjectText.transform.position.y + 1.0f, -2.0f);
+
+        while (!arrived)
+        {
+
             gameObjectText.transform.position = Vector3.MoveTowards(gameObjectText.transform.position, desiredPositionVertical, 0.75f * Time.deltaTime);
             if (Vector3.Distance(gameObjectText.transform.position, desiredPositionVertical) == 0) arrived = true;
             yield return null;
@@ -1537,12 +1686,12 @@ public class gameBoard : MonoBehaviour
                     GameObject terrainTile = Instantiate(terrain1) as GameObject;
                     terrainTile.transform.position = new Vector3(i, j, -1);
                     terrainTile = Instantiate(terrain4) as GameObject;
-                    terrainTile.transform.position = new Vector3(i, j, -1);
+                    terrainTile.transform.position = new Vector3(i, j, -1.1f);
                 }
                 else if (terrainInput[i, j] == "t5")
                 {
                     GameObject terrainTile = Instantiate(terrain5) as GameObject;
-                    terrainTile.transform.position = new Vector3(i, j, -1);
+                    terrainTile.transform.position = new Vector3(i, j, -1.1f);
                 }
                 else if (terrainInput[i, j] == "b1")
                 {

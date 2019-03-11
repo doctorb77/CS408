@@ -12,6 +12,8 @@ public class getScores : MonoBehaviour
 
     public GameObject playerEntryPrefab;
 
+    public AudioSource buttonClick;
+
     private int size;
     string API_KEY = "2oRiTkq1ZrBIqNFzU7tVqFELzCpu_J0H";
     public int offset = 0;
@@ -164,6 +166,8 @@ public class getScores : MonoBehaviour
     }
     public void searchButtonCLick()
     {
+        buttonClick.Play(0);
+
         searchIndex = 0;
         findNumberOfMatches();
         enterMatchesInSearch();
@@ -226,6 +230,8 @@ public class getScores : MonoBehaviour
     /// </summary>
     public void leftArrowClick()
     {
+        buttonClick.Play(0);
+
         clearValues();
         if (!searching)
         {
@@ -252,6 +258,8 @@ public class getScores : MonoBehaviour
     /// </summary>
     public void rightArrowClick()
     {
+        buttonClick.Play(0);
+
         if (!searching)
         {
             clearValues();

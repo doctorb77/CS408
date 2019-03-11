@@ -4,8 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+//Music for main menu "Space Atmosphere"
+//Copyright/Attribution Notice: 
+//Alexandr Zhelanov, https://soundcloud.com/alexandr-zhelanov
+
 public class MainMenu_Script : MonoBehaviour
 {
+
+    public AudioSource menuMusic;
+    public AudioSource buttonClick;
 
     public GameObject maps;
     public Dropdown m_Dropdown;
@@ -86,6 +93,9 @@ public class MainMenu_Script : MonoBehaviour
 
     void Start()
     {
+        if (menuMusic.isPlaying == false)
+            menuMusic.Play(0);
+
         if (PlayerPrefs.GetInt("score") != 0 && PlayerPrefs.HasKey("gameWasPlayed") && PlayerPrefs.GetInt("gameWasPlayed") == 1)
         {
             PlayerPrefs.SetInt("gameWasPlayed", 0);
@@ -178,6 +188,7 @@ public class MainMenu_Script : MonoBehaviour
     {
         glitch_script.enabled = true;
         StartCoroutine(glitch_stop());
+        buttonClick.Play(0);
     }
 
     IEnumerator glitch_stop()

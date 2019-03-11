@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class Tutorial_Script : MonoBehaviour
 {
+    public AudioSource buttonClick;
+
     public Sprite[] tutorial_panels;
     public Image current_panel;
     public int num_panels; //important, set this to the amount of panels you plan to have.
@@ -24,6 +26,8 @@ public class Tutorial_Script : MonoBehaviour
 
     public void next()
     {
+        buttonClick.Play(0);
+
         current_panel_index++;
 
         if (current_panel_index == num_panels)
@@ -36,6 +40,8 @@ public class Tutorial_Script : MonoBehaviour
 
     public void prev()
     {
+        buttonClick.Play(0);
+
         current_panel_index--;
 
         if (current_panel_index == -1)
