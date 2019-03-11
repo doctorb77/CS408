@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.16380635, g: 0.10699534, b: 0.22275206, a: 1}
+  m_IndirectSpecularColor: {r: 0.16466555, g: 0.10827208, b: 0.22373557, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1751,6 +1751,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d44404fa01b8a8848841d2cdacb4641e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maps: {fileID: 820672727}
+  m_Dropdown: {fileID: 0}
   sky_rotate_speed: 0.3
   panel_main: {fileID: 1554086388}
   panel_host: {fileID: 1859140731}

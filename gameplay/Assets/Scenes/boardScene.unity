@@ -1413,7 +1413,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 4
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -4055,9 +4055,36 @@ MonoBehaviour:
     type: 3}
   terrain2: {fileID: 3170017251700949577, guid: 0a8dfc66fa1c5f14d9af1c5b50c932c7,
     type: 3}
+  topRightImpassable: {fileID: 4011178840350674009, guid: 9c04486de9a13274b8f07b226fdd8c18,
+    type: 3}
+  bottomLeftMostlyAcid: {fileID: 4011178840350674009, guid: f3a55585b03a1194cb7beb6f26396003,
+    type: 3}
+  topRightMostlyAcid: {fileID: 4011178840350674009, guid: ef6db6281d9add3448589035fff58172,
+    type: 3}
+  bottomRightImpassable: {fileID: 4011178840350674009, guid: b9f42fefcf51680458c74f9bfa73e9c3,
+    type: 3}
+  bottomRightGround: {fileID: 5230880801534305049, guid: 8f2b8650066429f4a8b59c2c8c89e542,
+    type: 3}
+  topLeftMostlyImpassable: {fileID: 6242860379648509814, guid: 15561480b47042242a4038d3b8b274c2,
+    type: 3}
+  straightEdgeTop: {fileID: 4011178840350674009, guid: 21788cf768903b847970f0deb3ab19aa,
+    type: 3}
+  straightEdgeBottom: {fileID: 4011178840350674009, guid: 50b5720e29e0b684594fe536111097e3,
+    type: 3}
+  straightEdgeLeftGround: {fileID: 1858204790577079545, guid: 72ba43aa53669d34cbaf871af3b52174,
+    type: 3}
+  straightEdgeRightGround: {fileID: 1858204790577079545, guid: e2f6a7539fc1c164d8b64d18efa05bc2,
+    type: 3}
+  topLeftGround: {fileID: 4011178840350674009, guid: 6c95905ffe6f0ec4db5f1e42613bb13c,
+    type: 3}
+  bottomLeftGround: {fileID: 3082392123353144856, guid: 79fb0e0df70837e4e9efdb1e8d8a2d9e,
+    type: 3}
+  center: {fileID: 4011178840350674009, guid: eecb27771dc0b6146919b1e510b1dd46, type: 3}
   terrain3: {fileID: 1408710064225956231, guid: 09d5ca95f4b0345478bc01536706a14d,
     type: 3}
   terrain4: {fileID: 4818852775687053259, guid: 7dcbf0b13eb62bf438d884591d23c2d0,
+    type: 3}
+  terrain5: {fileID: 6836400599755125192, guid: dae2250aa0a536843a5640688b516926,
     type: 3}
   melee1tier1: {fileID: 6385284349475645496, guid: 11c78d75470e9b546ba8981e51440304,
     type: 3}
@@ -4082,6 +4109,10 @@ MonoBehaviour:
   ranged2tier2: {fileID: 188896344037941191, guid: 86f84efbf39b93749a814875b905ca45,
     type: 3}
   ranged2tier3: {fileID: 4484339994653256811, guid: 518e06afa3a87374291b6e8f0c8f80dd,
+    type: 3}
+  alienProjectile: {fileID: 2596843786564325127, guid: e0c1e76d4d1c6d0448e55f9a317a883c,
+    type: 3}
+  atronautProjectile: {fileID: 2342185698125899003, guid: 401a2bcf875b252479c5c0a7d7ecb76a,
     type: 3}
   selectedUnit: {fileID: 0}
   lightBlueValidMoveTile: {fileID: 3684366913887164867, guid: 424c665401defae48844fab3bf5b7bef,
@@ -4157,7 +4188,7 @@ Transform:
   m_GameObject: {fileID: 1579423077}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 4.5, y: 4.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 0}
+  m_LocalScale: {x: 3, y: 3, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -4173,7 +4204,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 10, y: 10, z: 0.2}
+  m_Size: {x: 30, y: 30, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &1579423082
 Animator:

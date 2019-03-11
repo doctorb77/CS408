@@ -20,12 +20,14 @@ public class CameraMovement : MonoBehaviour
 
     public void Start()
     {
-        mapheight = PlayerPrefs.GetInt("mapheight");
-        mapwidth = PlayerPrefs.GetInt("mapwidth");
+        //mapheight = PlayerPrefs.GetInt("mapheight");
+        //mapwidth = PlayerPrefs.GetInt("mapwidth");
     }
 
     public void Update()
     {
+        mapheight = PlayerPrefs.GetInt("mapheight");
+        mapwidth = PlayerPrefs.GetInt("mapwidth");
         // Check if on the right edge
         if (Input.mousePosition.x >= Screen.width - mDelta && transform.position.x <= mapwidth)
         {

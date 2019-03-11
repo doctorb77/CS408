@@ -10,17 +10,62 @@ public class gameBoard : MonoBehaviour
 {
     public static gameBoard Instance { set; get; }
 
-    public string[,] terrainTileInstanceTypes = new string[10, 10];
-    public GameObject[,] unitTileInstances = new GameObject[10, 10];
+    private string[,] terrainTileInstanceTypes;
+    private GameObject[,] unitTileInstances;
 
-    public Vector2 terrainSize = new Vector2(10.0f, 10.0f);
+    public Vector2 terrainSize;
+
+    private string[] maps = {
+        "t1, t1, t1, t1, t1, t1, t1, t1, t1, t2, t2, t1, t1, t1, t1, t1, t1, t1, t1, t1, "+
+        "t1, t5, t3, t1, t1, t1, t4, t1, t1, t2, t2, t2, t1, t5, t1, t1, t1, t1, b2, t1, "+
+        "t1, t3, t1, t1, t1, t1, t1, t1, t1, t2, t2, t2, t2, t1, t1, t1, t3, t1, t1, t1, "+
+        "t2, t2, t2, t1, t3, t3, t1, t1, t1, t1, t2, t2, t2, t1, t1, t1, t1, t3, t1, t1, "+
+        "t2, t2, t2, t1, t3, t1, t1, t4, t1, t1, t1, t2, t2, t1, t1, t1, t1, t1, t1, t4, "+
+        "t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t2, t2, t1, t1, t1, t2, t2, t1, t1, "+
+        "t1, t1, t1, t1, t1, t1, t1, t1, t3, t1, t1, t1, t4, t1, t1, t1, t2, t2, t1, t1, "+
+        "t1, t1, t4, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t4, t1, t1, "+
+        "t1, t2, t2, t1, t1, t1, t1, t4, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, t1, "+
+        "t1, t2, t2, t1, t1, t1, t1, t2, t2, t1, t1, t3, t1, t1, t1, t1, t1, t1, t1, t1, "+
+        "t4, t1, t1, t1, t1, t1, t1, t2, t2, t1, t1, t1, t1, t1, t3, t3, t1, t2, t2, t2, "+
+        "t1, t1, t3, t1, t1, t1, t1, t2, t2, t2, t1, t1, t4, t1, t1, t3, t1, t2, t2, t2, "+
+        "t1, t1, t1, t3, t1, t1, t1, t2, t2, t2, t2, t1, t1, t1, t1, t1, t1, t1, t3, t1, "+
+        "t1, b1, t1, t1, t1, t1, t5, t1, t2, t2, t2, t1, t1, t4, t1, t1, t1, t3, t5, t1, "+
+        "t1, t1, t1, t1, t1, t1, t1, t1, t1, t2, t2, t1, t1, t1, t1, t1, t1, t1, t1, t1",
+
+        "t5, t1, t1, t1, t1, t1, t1, t5, " +
+        "t1, b1, t1, t3, t3, t1, t4, t1, " +
+        "t1, t1, t1, t1, t1, t1, t1, t1, " +
+        "t1, t3, t1, t2, t2, t1, t3, t1, " +
+        "t1, t3, t1, t2, t2, t1, t3, t1, " +
+        "t1, t1, t1, t1, t1, t1, t1, t1, " +
+        "t1, t4, t1, t3, t3, t1, b2, t1, " +
+        "t5, t1, t1, t1, t1, t1, t1, t5"
+    };
 
     public GameObject base1;
     public GameObject base2;
     public GameObject terrain1;
     public GameObject terrain2;
+
+    public GameObject topRightImpassable;
+    public GameObject bottomLeftMostlyAcid;
+    public GameObject topRightMostlyAcid;
+    public GameObject bottomRightImpassable;
+    public GameObject bottomRightGround;
+    public GameObject topLeftMostlyImpassable;
+    public GameObject straightEdgeTop;
+    public GameObject straightEdgeBottom;
+    public GameObject straightEdgeLeftGround;
+    public GameObject straightEdgeRightGround;
+    public GameObject topLeftGround;
+    public GameObject bottomLeftGround;
+    public GameObject center;
+
     public GameObject terrain3;
     public GameObject terrain4;
+
+    public GameObject terrain5;
+
     public GameObject melee1tier1;
     public GameObject melee1tier2;
     public GameObject melee2tier1;
@@ -33,6 +78,9 @@ public class gameBoard : MonoBehaviour
     public GameObject ranged2tier1;
     public GameObject ranged2tier2;
     public GameObject ranged2tier3;
+
+    public GameObject alienProjectile;
+    public GameObject atronautProjectile;
 
     public GameObject selectedUnit;
     public GameObject lightBlueValidMoveTile;
@@ -63,8 +111,20 @@ public class gameBoard : MonoBehaviour
 
     bool spawnMenuActive;
 
+    int highlightMapWidth;
+    int highlightMapHeight;
+
     private void Start()
     {
+        int mapID = getMapID(); //Retrieve the player-selected mapID
+        int mapLength = getMapLength(mapID); //Retrieve the length of the player selected map
+        int mapHeight = getMapHeight(mapID); //Retrieve the height of the player selected map
+
+        PlayerPrefs.SetInt("mapwidth", mapLength);
+        PlayerPrefs.SetInt("mapheight", mapHeight);
+
+        highlightMapWidth = highlightMapHeight = 0;
+
         checkingVictory = true;
         showPlayer1Victory.SetActive(false);
         showPlayer2Victory.SetActive(false);
@@ -72,26 +132,25 @@ public class gameBoard : MonoBehaviour
         spawnMenuActive = false;
 
         score = 20;
-        
 
-        string map = PlayerPrefs.GetString("mapname");
+
+        //string map = PlayerPrefs.GetString("mapname");
 
         //if (String.Compare(map, "\"a_nice_map1\"") == 0)
         //{
-            //load map
-            loadMap1();
+        //load map
+        loadMap();
         //}
 
-        PlayerPrefs.SetInt("mapwidth", 10);
-        PlayerPrefs.SetInt("mapheight", 10);
+        
 
 
         Instance = this;
 
         selectedUnit = null;
 
-        for (int i = 0; i < 10; i++)
-            for (int j = 0; j < 10; j++)
+        for (int i = 0; i < getMapLength(getMapID()); i++)
+            for (int j = 0; j < getMapHeight(getMapID()); j++)
                 unitTileInstances[i, j] = null;
 
         //initialize turn state
@@ -121,27 +180,79 @@ public class gameBoard : MonoBehaviour
 
     }
 
-    public void loadMap1()
+    //Obtains the map string array for the player-selected map
+    public int getMapID()
     {
-        string[,] t = new string[10, 10];
+        return PlayerPrefs.GetInt("mapID");
+    }
 
-        //t1 = regular tile
-        //t2 = impassible tile
-        //t3 = defensive tile
-        //t4 = resource tile
+    //Returns the width of the player-selected map
+    public int getMapLength(int mapID)
+    {
+        switch (mapID)
+        {
+            case 0:
+                return 20;
+            case 1:
+                return 8;
+        }
+        return -1;
+    }
 
-        t[0, 9] = "t1"; t[1, 9] = "t1"; t[2, 9] = "t1"; t[3, 9] = "t1"; t[4, 9] = "t1"; t[5, 9] = "t3"; t[6, 9] = "t1"; t[7, 9] = "t1"; t[8, 9] = "t1"; t[9, 9] = "t1";
-        t[0, 8] = "t1"; t[1, 8] = "t2"; t[2, 8] = "t1"; t[3, 8] = "t1"; t[4, 8] = "t1"; t[5, 8] = "t3"; t[6, 8] = "t1"; t[7, 8] = "t1"; t[8, 8] = "b2"; t[9, 8] = "t1";
-        t[0, 7] = "t3"; t[1, 7] = "t3"; t[2, 7] = "t3"; t[3, 7] = "t1"; t[4, 7] = "t2"; t[5, 7] = "t2"; t[6, 7] = "t1"; t[7, 7] = "t1"; t[8, 7] = "t1"; t[9, 7] = "t1";
-        t[0, 6] = "t1"; t[1, 6] = "t1"; t[2, 6] = "t1"; t[3, 6] = "t2"; t[4, 6] = "t2"; t[5, 6] = "t2"; t[6, 6] = "t2"; t[7, 6] = "t1"; t[8, 6] = "t4"; t[9, 6] = "t1";
-        t[0, 5] = "t1"; t[1, 5] = "t4"; t[2, 5] = "t1"; t[3, 5] = "t2"; t[4, 5] = "t2"; t[5, 5] = "t2"; t[6, 5] = "t2"; t[7, 5] = "t3"; t[8, 5] = "t3"; t[9, 5] = "t3";
-        t[0, 4] = "t3"; t[1, 4] = "t3"; t[2, 4] = "t3"; t[3, 4] = "t2"; t[4, 4] = "t2"; t[5, 4] = "t2"; t[6, 4] = "t2"; t[7, 4] = "t1"; t[8, 4] = "t4"; t[9, 4] = "t1";
-        t[0, 3] = "t1"; t[1, 3] = "t4"; t[2, 3] = "t1"; t[3, 3] = "t2"; t[4, 3] = "t2"; t[5, 3] = "t2"; t[6, 3] = "t2"; t[7, 3] = "t1"; t[8, 3] = "t1"; t[9, 3] = "t1";
-        t[0, 2] = "t1"; t[1, 2] = "t1"; t[2, 2] = "t1"; t[3, 2] = "t1"; t[4, 2] = "t2"; t[5, 2] = "t2"; t[6, 2] = "t1"; t[7, 2] = "t3"; t[8, 2] = "t3"; t[9, 2] = "t3";
-        t[0, 1] = "t1"; t[1, 1] = "b1"; t[2, 1] = "t1"; t[3, 1] = "t1"; t[4, 1] = "t3"; t[5, 1] = "t1"; t[6, 1] = "t1"; t[7, 1] = "t1"; t[8, 1] = "t2"; t[9, 1] = "t1";
-        t[0, 0] = "t1"; t[1, 0] = "t1"; t[2, 0] = "t1"; t[3, 0] = "t1"; t[4, 0] = "t3"; t[5, 0] = "t1"; t[6, 0] = "t1"; t[7, 0] = "t1"; t[8, 0] = "t1"; t[9, 0] = "t1";
-    
-        initializeTerrain(t);
+    public int getMapHeight(int mapID)
+    {
+        switch (mapID)
+        {
+            case 0:
+                return 15;
+            case 1:
+                return 8;
+        }
+        return -1;
+    }
+
+    public void loadMap()
+    {
+        int index = 0; //Index variable to keep track of where in the map we are
+        int mapID = getMapID(); //Retrieve the player-selected mapID
+        int mapLength = getMapLength(mapID); //Retrieve the length of the player selected map
+        int mapHeight = getMapHeight(mapID); //Retrieve the height of the player selected map
+
+        //PlayerPrefs.SetInt("mapwidth", mapLength);
+        //PlayerPrefs.SetInt("mapheight", mapHeight);
+
+        highlightMapWidth = mapLength;
+        highlightMapHeight = mapHeight;
+
+        string map = maps[mapID]; //Get the map string for the selected map using the mapID
+        map = map.Replace(" ", "");
+
+        string[] x = map.Split(','); //Turn the map string into an array of tiles, so we can load them in individually using the index variable
+        Array.Reverse(x);
+        string[,] t = new string[mapLength, mapHeight];
+        string test = "";
+
+        //The columns loop has to be on the outside, since the string is going to the next tile to the right every time we need to make sure length is the one incremented every time
+        for (int j = 0; j < mapHeight; j++)
+        {
+            for (int i = 0; i < mapLength; i++)
+            {
+                t[i, j] = x[index];
+                test += x[index];
+                index++;
+            }
+            //Debug.Log(test);
+            test = "";
+        }
+        terrainTileInstanceTypes = new string[mapLength, mapHeight];
+        unitTileInstances = new GameObject[mapLength, mapHeight];
+        terrainSize = new Vector2((float)mapLength, (float)mapHeight);
+
+        for (int i = 0; i < mapLength; i++)
+            for (int j = 0; j < mapHeight; j++)
+                unitTileInstances[i, j] = null;
+
+        initializeTerrain(t, mapLength, mapHeight);
     }
 
     public void endTurn()
@@ -160,6 +271,14 @@ public class gameBoard : MonoBehaviour
 
         if (isPlayerOneTurn)
         {
+            var units = GameObject.FindGameObjectsWithTag("unit");
+            foreach (GameObject obj in units)
+            {
+                if (terrainTileInstanceTypes[(int)obj.transform.position.x, (int)obj.transform.position.y] == "t5" && obj.GetComponent<unit>().isPlayerOneUnit == true)
+                    player1Funds += 500;
+            }
+
+
             showPlayer1UnitSelection.SetActive(true);
             showPlayer2UnitSelection.SetActive(false);
             player1Funds += 1000;
@@ -167,6 +286,13 @@ public class gameBoard : MonoBehaviour
         }
         else
         {
+            var units = GameObject.FindGameObjectsWithTag("unit");
+            foreach (GameObject obj in units)
+            {
+                if (terrainTileInstanceTypes[(int)obj.transform.position.x, (int)obj.transform.position.y] == "t5" && obj.GetComponent<unit>().isPlayerOneUnit == false)
+                    player2Funds += 500;
+            }
+
             showPlayer2UnitSelection.SetActive(true);
             showPlayer1UnitSelection.SetActive(false);
             player2Funds += 1000;
@@ -416,8 +542,14 @@ public class gameBoard : MonoBehaviour
                 int currMouseX = (int)Mathf.Round((hit.point.x));
                 int currMouseY = (int)Mathf.Round((hit.point.y));
 
-                //if spot is empty move selected unit there
-                if (unitTileInstances[currMouseX, currMouseY] == null)
+                if (currMouseX >= highlightMapWidth || currMouseY >= highlightMapHeight || currMouseX < 0 || currMouseY < 0)
+                    return;
+
+                if (this.terrainTileInstanceTypes[currMouseX, currMouseY] == "t2")
+                    return;
+
+                    //if spot is empty move selected unit there
+                    if (unitTileInstances[currMouseX, currMouseY] == null)
                 {
                     if (selectedUnit == null)
                         return;
@@ -639,6 +771,49 @@ public class gameBoard : MonoBehaviour
         return defendingUnitWithinRange;
     }
 
+    public IEnumerator projectileCoroutine(GameObject attackingUnit, GameObject defendingUnit)
+    {
+        bool arrived = false;
+
+        GameObject projectile = null;
+
+        if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee")
+            yield break;
+
+        if (attackingUnit.GetComponent<unit>().isPlayerOneUnit)
+        {
+            projectile = Instantiate(alienProjectile) as GameObject;
+        }
+        else
+        {
+            projectile = Instantiate(atronautProjectile) as GameObject;
+        }
+
+        //projectile.GetComponent<Animator>().SetTrigger("projectileAnimation");
+
+        projectile.transform.position = new Vector3(attackingUnit.transform.position.x, attackingUnit.transform.position.y, -3.0f);
+
+        Vector3 desiredPosition = defendingUnit.transform.position;
+        desiredPosition.z = -3.0f;
+
+        if (Math.Abs(desiredPosition.y - attackingUnit.transform.position.y) <= 0.01f && Math.Abs(desiredPosition.y - attackingUnit.transform.position.y) <= 0.01f)
+        {
+            arrived = true;
+        }
+       
+
+        while (!arrived)
+        {
+            projectile.transform.position = Vector3.MoveTowards(projectile.transform.position, desiredPosition, 1.0f * Time.deltaTime);
+            if (Vector3.Distance(projectile.transform.position, desiredPosition) == 0) arrived = true;
+            yield return null;
+        }
+        if (arrived)
+        {
+            Destroy(projectile);
+        }
+    }
+
     //combat coroutine
     public IEnumerator CombatCoroutine(GameObject attackingUnit, GameObject defendingUnit)
     {
@@ -667,7 +842,7 @@ public class gameBoard : MonoBehaviour
             attackingUnit.GetComponent<Animator>().SetTrigger("combatright");
         }
 
-
+        StartCoroutine(projectileCoroutine(attackingUnit, defendingUnit));
 
         //if attackingUnit is within defendingUnit range, play defendingUnit combat animation
         bool attackingUnitWithinRange = isDefendingWithinAttacking(defendingUnit, attackingUnit);
@@ -691,7 +866,8 @@ public class gameBoard : MonoBehaviour
             }
         }
 
-
+        if (attackingUnitWithinRange)
+            StartCoroutine(projectileCoroutine(defendingUnit, attackingUnit));
 
         yield return new WaitForSeconds(2);
 
@@ -732,7 +908,7 @@ public class gameBoard : MonoBehaviour
 
         if (attackingUnitWithinRange)
         {
-            int attack = attackingUnit.GetComponent<unit>().attack;
+            int attack = defendingUnit.GetComponent<unit>().attack;
 
             if (attackingUnit.GetComponent<unit>().tier == 1)
                 attack = attack + (Random.Range(-2, 2));
@@ -759,18 +935,26 @@ public class gameBoard : MonoBehaviour
         }
         unit.GetComponent<Renderer>().enabled = true;
 
+        if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && unit.GetComponent<unit>().typeOfUnit == "ranged")
+            damageTaken = (int)((float)damageTaken * 1.30f);
+
+        if (terrainTileInstanceTypes[(int)unit.transform.position.x, (int)unit.transform.position.y] == "t4")
+            damageTaken = (int)((float)damageTaken * 1.30f);
+        else if (terrainTileInstanceTypes[(int)unit.transform.position.x, (int)unit.transform.position.y] == "t3")
+            damageTaken = (int)((float)damageTaken * 0.70f);
+        
         unit.GetComponent<unit>().health -= damageTaken;
 
         StartCoroutine(spawnAndMoveHurtNumber((int)unit.transform.position.x, (int)unit.transform.position.y, damageTaken));
 
         if (isPlayerOneTurn && attackingUnit.GetComponent<unit>().isPlayerOneUnit)
         {
-            Debug.Log("test");
+            //Debug.Log("test");
             attackingUnit.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.2f);
         }
         if (!isPlayerOneTurn && !attackingUnit.GetComponent<unit>().isPlayerOneUnit)
         {
-            Debug.Log("test2");
+            //Debug.Log("test2");
             attackingUnit.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.2f);
         }
 
@@ -952,57 +1136,422 @@ public class gameBoard : MonoBehaviour
         {
             for (int j = y - maxMoveDistance; j <= y + maxMoveDistance; j++)
             {
-                if (i >= 0 && i < 10 && j >= 0 && j < 10)
+                if (i >= 0 && i < highlightMapWidth && j >= 0 && j < highlightMapHeight)
                 {
+                    if (this.terrainTileInstanceTypes[i, j] == "t2")
+                        continue;
+
+                    if (this.unitTileInstances[i, j] != null && isPlayerOneTurn && this.unitTileInstances[i, j].GetComponent<unit>().isPlayerOneUnit == true)
+                        continue;
+
+                    if (this.unitTileInstances[i, j] != null && !isPlayerOneTurn && this.unitTileInstances[i, j].GetComponent<unit>().isPlayerOneUnit == false)
+                        continue;
+
                     if (unitType == "melee")
                     {
                         if (!(i == x + 1 && j == y + 1) && !(i == x + 1 && j == y - 1) && !(i == x - 1 && j == y + 1) && !(i == x - 1 && j == y - 1))
                         {
                             GameObject validMoveTileInstance = Instantiate(lightBlueValidMoveTile) as GameObject;
                             validMoveTileInstance.transform.position = new Vector3(i, j, -3);
+                            validMoveTileInstance.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.4f);
                         }
                     }
                     else
                     {
                         GameObject validMoveTileInstance = Instantiate(lightBlueValidMoveTile) as GameObject;
                         validMoveTileInstance.transform.position = new Vector3(i, j, -3);
+                        validMoveTileInstance.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.4f);
                     }
                 }
             }
         }
     }
 
-    private void initializeTerrain(string[,] terrainInput)
+    private string checkSurroundings(string[,] terrainInput, int mapLength, int mapHeight, int i, int j)
     {
-        for (int i = 0; i < 10; i++)
+        if (i > 0 && j > 0 && i < mapLength - 1 && j < mapHeight - 1)
         {
-            for (int j = 0; j < 10; j++)
+            if (terrainInput[i + 1, j] == "t2" && terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i - 1, j - 1] == "t2" && terrainInput[i - 1, j + 1] == "t2" && terrainInput[i + 1, j - 1] == "t2" && terrainInput[i + 1, j + 1] == "t2")
             {
+                return "center";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i + 1, j] != "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] != "t2")
+            {
+                return "topRight";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i + 1, j] != "t2" && terrainInput[i, j - 1] != "t2" && terrainInput[i, j + 1] == "t2")
+            {
+                return "bottomRight";
+            }
+            else if (terrainInput[i - 1, j] != "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i, j - 1] != "t2")
+            {
+                return "bottomLeft";
+            }
+            else if (terrainInput[i - 1, j] != "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i, j + 1] != "t2" && terrainInput[i, j - 1] == "t2")
+            {
+                return "topLeft";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i + 1, j - 1] == "t2" && terrainInput[i - 1, j + 1] != "t2")
+            {
+                return "bottomRightImpassable";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i + 1, j - 1] == "t2" && terrainInput[i - 1, j + 1] == "t2" && terrainInput[i + 1, j + 1] == "t2")
+            {
+                return "topRightMostlyAcid";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i + 1, j - 1] == "t2" && terrainInput[i - 1, j + 1] == "t2")
+            {
+                return "bottomLeftMostlyAcid";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i + 1, j + 1] == "t2")
+            {
+                return "topLeftMostlyImpassable";
+            }
+            else if (terrainInput[i - 1, j] != "t2" && terrainInput[i + 1, j] == "t2")
+            {
+                return "straightLeftGround";
+            }
+            else if (terrainInput[i + 1, j] != "t2" && terrainInput[i - 1, j] == "t2")
+            {
+                return "straightRightGround";
+            }
+            else if (terrainInput[i, j - 1] != "t2" && terrainInput[i, j + 1] == "t2")
+            {
+                return "straightEdgeBottom";
+            }
+            else if (terrainInput[i, j + 1] != "t2" && terrainInput[i, j - 1] == "t2")
+            {
+                return "straightEdgeTop";
+            }
+        }
+        else if (i > 0 && j == 0 && i < mapLength - 1 && j < mapHeight - 1)
+        {
+            if (terrainInput[i + 1, j] == "t2" && terrainInput[i - 1, j] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i - 1, j + 1] == "t2" && terrainInput[i + 1, j + 1] == "t2")
+            {
+                return "center";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i + 1, j] != "t2" && terrainInput[i, j + 1] != "t2")
+            {
+                return "topRight";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i + 1, j] != "t2" && terrainInput[i, j + 1] == "t2")
+            {
+                return "bottomRight";
+            }
+            else if (terrainInput[i - 1, j] != "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i, j + 1] == "t2")
+            {
+                return "bottomLeft";
+            }
+            else if (terrainInput[i - 1, j] != "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i, j + 1] != "t2")
+            {
+                return "topLeft";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i + 1, j] == "t2"
+)
+            {
+                return "bottomRightImpassable";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i - 1, j + 1] == "t2" && terrainInput[i + 1, j + 1] == "t2")
+            {
+                return "topRightMostlyAcid";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i - 1, j + 1] == "t2")
+            {
+                return "bottomLeftMostlyAcid";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i + 1, j + 1] == "t2")
+            {
+                return "topLeftMostlyImpassable";
+            }
+            else if (terrainInput[i - 1, j] != "t2" && terrainInput[i + 1, j] == "t2")
+            {
+                return "straightLeftGround";
+            }
+            else if (terrainInput[i + 1, j] != "t2" && terrainInput[i - 1, j] == "t2")
+            {
+                return "straightRightGround";
+            }
+            else if (terrainInput[i, j + 1] == "t2")
+            {
+                return "straightEdgeBottom";
+            }
+            else if (terrainInput[i, j + 1] != "t2")
+            {
+                return "straightEdgeTop";
+            }
+        }
+        else if (i > 0 && j > 0 && i < mapLength - 1 && j == mapHeight - 1)
+        {
+            if (terrainInput[i + 1, j] == "t2" && terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i - 1, j - 1] == "t2" && terrainInput[i + 1, j - 1] == "t2")
+            {
+                return "center";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i + 1, j] != "t2" && terrainInput[i, j - 1] == "t2")
+            {
+                return "topRight";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i + 1, j] != "t2" && terrainInput[i, j - 1] != "t2")
+            {
+                return "bottomRight";
+            }
+            else if (terrainInput[i - 1, j] != "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i, j - 1] != "t2")
+            {
+                return "bottomLeft";
+            }
+            else if (terrainInput[i - 1, j] != "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i, j - 1] == "t2")
+            {
+                return "topLeft";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i + 1, j - 1] == "t2")
+            {
+                return "bottomRightImpassable";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i + 1, j - 1] == "t2")
+            {
+                return "topRightMostlyAcid";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i + 1, j - 1] == "t2")
+            {
+                return "bottomLeftMostlyAcid";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i + 1, j] == "t2"
+)
+            {
+                return "topLeftMostlyImpassable";
+            }
+            else if (terrainInput[i - 1, j] != "t2" && terrainInput[i + 1, j] == "t2")
+            {
+                return "straightLeftGround";
+            }
+            else if (terrainInput[i + 1, j] != "t2" && terrainInput[i - 1, j] == "t2")
+            {
+                return "straightRightGround";
+            }
+            else if (terrainInput[i, j - 1] != "t2")
+            {
+                return "straightEdgeBottom";
+            }
+            else if (terrainInput[i, j - 1] == "t2")
+            {
+                return "straightEdgeTop";
+            }
+        }
+        else if (i == 0 && j > 0 && i < mapLength - 1 && j < mapHeight - 1)
+        {
+            if (terrainInput[i + 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i + 1, j - 1] == "t2" && terrainInput[i + 1, j + 1] == "t2")
+            {
+                return "center";
+            }
+            else if (terrainInput[i + 1, j] != "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] != "t2")
+            {
+                return "topRight";
+            }
+            else if (terrainInput[i + 1, j] != "t2" && terrainInput[i, j - 1] != "t2" && terrainInput[i, j + 1] == "t2")
+            {
+                return "bottomRight";
+            }
+            else if (terrainInput[i + 1, j] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i, j - 1] != "t2")
+            {
+                return "bottomLeft";
+            }
+            else if (terrainInput[i + 1, j] == "t2" && terrainInput[i, j + 1] != "t2" && terrainInput[i, j - 1] == "t2")
+            {
+                return "topLeft";
+            }
+            else if (terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i + 1, j - 1] == "t2")
+            {
+                return "bottomRightImpassable";
+            }
+            else if (terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i + 1, j - 1] == "t2" && terrainInput[i + 1, j + 1] == "t2")
+            {
+                return "topRightMostlyAcid";
+            }
+            else if (terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i + 1, j - 1] == "t2")
+            {
+                return "bottomLeftMostlyAcid";
+            }
+            else if (terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i + 1, j] == "t2" && terrainInput[i + 1, j + 1] == "t2")
+            {
+                return "topLeftMostlyImpassable";
+            }
+            else if (terrainInput[i + 1, j] == "t2")
+            {
+                return "straightLeftGround";
+            }
+            else if (terrainInput[i + 1, j] != "t2")
+            {
+                return "straightRightGround";
+            }
+            else if (terrainInput[i, j - 1] != "t2" && terrainInput[i, j + 1] == "t2")
+            {
+                return "straightEdgeBottom";
+            }
+            else if (terrainInput[i, j + 1] != "t2" && terrainInput[i, j - 1] == "t2")
+            {
+                return "straightEdgeTop";
+            }
+        }
+        else if (i > 0 && j > 0 && i == mapLength - 1 && j < mapHeight - 1)
+        {
+            if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i - 1, j - 1] == "t2" && terrainInput[i - 1, j + 1] == "t2")
+            {
+                return "center";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] != "t2")
+            {
+                return "topRight";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] != "t2" && terrainInput[i, j + 1] == "t2")
+            {
+                return "bottomRight";
+            }
+            else if (terrainInput[i - 1, j] != "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i, j - 1] != "t2")
+            {
+                return "bottomLeft";
+            }
+            else if (terrainInput[i - 1, j] != "t2" && terrainInput[i, j + 1] != "t2" && terrainInput[i, j - 1] == "t2")
+            {
+                return "topLeft";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] == "t2")
+            {
+                return "bottomRightImpassable";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i - 1, j + 1] == "t2")
+            {
+                return "topRightMostlyAcid";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] == "t2" && terrainInput[i - 1, j + 1] == "t2")
+            {
+                return "bottomLeftMostlyAcid";
+            }
+            else if (terrainInput[i - 1, j] == "t2" && terrainInput[i, j - 1] == "t2" && terrainInput[i, j + 1] == "t2")
+            {
+                return "topLeftMostlyImpassable";
+            }
+            else if (terrainInput[i - 1, j] != "t2")
+            {
+                return "straightLeftGround";
+            }
+            else if (terrainInput[i - 1, j] == "t2")
+            {
+                return "straightRightGround";
+            }
+            else if (terrainInput[i, j - 1] != "t2" && terrainInput[i, j + 1] == "t2")
+            {
+                return "straightEdgeBottom";
+            }
+            else if (terrainInput[i, j + 1] != "t2" && terrainInput[i, j - 1] == "t2")
+            {
+                return "straightEdgeTop";
+            }
+        }
+        return "t";
+    }
+
+    private void initializeTerrain(string[,] terrainInput, int mapLength, int mapHeight)
+    {
+
+        for (int i = 0; i < mapLength; i++)
+        {
+            for (int j = 0; j < mapHeight; j++)
+            {
+
+                /*
+                 t1 default
+                 t2 impassible
+                 t3 mountain
+                 t4 crater
+                 t5 resource
+                 b1 base1
+                 b2 base2
+                 * */
+
                 this.terrainTileInstanceTypes[i, j] = terrainInput[i, j];
 
-                if (terrainInput[i,j] == "t1")
+                if (terrainInput[i, j] == "t1")
                 {
                     GameObject terrainTile = Instantiate(terrain1) as GameObject;
                     terrainTile.transform.position = new Vector3(i, j, -1);
-                } else if (terrainInput[i, j] == "t2") {
-                    GameObject terrainTile = Instantiate(terrain2) as GameObject;
+                }
+                else if (terrainInput[i, j] == "t2")
+                {
+                    GameObject terrainTile;
+                    string s = checkSurroundings(terrainInput, mapLength, mapHeight, i, j);
+                    switch (s)
+                    {
+                        case "center":
+                            terrainTile = Instantiate(center) as GameObject;
+                            break;
+                        case "topRight":
+                            terrainTile = Instantiate(topRightImpassable) as GameObject;
+                            break;
+                        case "bottomRight":
+                            terrainTile = Instantiate(bottomRightGround) as GameObject;
+                            break;
+                        case "topLeft":
+                            terrainTile = Instantiate(topLeftGround) as GameObject;
+                            break;
+                        case "bottomLeft":
+                            terrainTile = Instantiate(bottomLeftGround) as GameObject;
+                            break;
+                        case "straightLeftGround":
+                            terrainTile = Instantiate(straightEdgeLeftGround) as GameObject;
+                            break;
+                        case "straightRightGround":
+                            terrainTile = Instantiate(straightEdgeRightGround) as GameObject;
+                            break;
+                        case "bottomRightImpassable":
+                            terrainTile = Instantiate(bottomRightImpassable) as GameObject;
+                            break;
+                        case "topLeftMostlyImpassable":
+                            terrainTile = Instantiate(topLeftMostlyImpassable) as GameObject;
+                            break;
+                        case "bottomLeftMostlyAcid":
+                            terrainTile = Instantiate(bottomLeftMostlyAcid) as GameObject;
+                            break;
+                        case "topRightMostlyAcid":
+                            terrainTile = Instantiate(topRightMostlyAcid) as GameObject;
+                            break;
+                        case "straightEdgeBottom":
+                            terrainTile = Instantiate(straightEdgeBottom) as GameObject;
+                            break;
+                        case "straightEdgeTop":
+                            terrainTile = Instantiate(straightEdgeTop) as GameObject;
+                            break;
+                        default:
+                            terrainTile = Instantiate(terrain2) as GameObject;
+                            break;
+                    }
                     terrainTile.transform.position = new Vector3(i, j, -1);
                 }
-                else if (terrainInput[i, j] == "t3") {
-                    GameObject terrainTile = Instantiate(terrain3) as GameObject;
+                else if (terrainInput[i, j] == "t3")
+                {
+                    GameObject terrainTile = Instantiate(terrain1) as GameObject;
                     terrainTile.transform.position = new Vector3(i, j, -1);
+                    terrainTile = Instantiate(terrain3) as GameObject;
+                    terrainTile.transform.position = new Vector3(i, j, -1.1f);
                 }
                 else if (terrainInput[i, j] == "t4")
                 {
-                    GameObject terrainTile = Instantiate(terrain4) as GameObject;
+                    GameObject terrainTile = Instantiate(terrain1) as GameObject;
+                    terrainTile.transform.position = new Vector3(i, j, -1);
+                    terrainTile = Instantiate(terrain4) as GameObject;
                     terrainTile.transform.position = new Vector3(i, j, -1);
                 }
-                else if (terrainInput[i, j] == "b1") {
+                else if (terrainInput[i, j] == "t5")
+                {
+                    GameObject terrainTile = Instantiate(terrain5) as GameObject;
+                    terrainTile.transform.position = new Vector3(i, j, -1);
+                }
+                else if (terrainInput[i, j] == "b1")
+                {
                     GameObject terrainTile = Instantiate(base1) as GameObject;
                     terrainTile.transform.position = new Vector3(i, j, -1);
                     baseLocation1.Set(i, j);
                 }
-                else if (terrainInput[i, j] == "b2") {
+                else if (terrainInput[i, j] == "b2")
+                {
                     GameObject terrainTile = Instantiate(base2) as GameObject;
                     terrainTile.transform.position = new Vector3(i, j, -1);
                     baseLocation2.Set(i, j);

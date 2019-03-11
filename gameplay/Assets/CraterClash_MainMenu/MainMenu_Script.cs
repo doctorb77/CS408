@@ -7,6 +7,10 @@ using UnityEngine.SceneManagement;
 public class MainMenu_Script : MonoBehaviour
 {
 
+    public GameObject maps;
+    public Dropdown m_Dropdown;
+
+
     public float sky_rotate_speed;
 
     public GameObject panel_main;
@@ -46,6 +50,9 @@ public class MainMenu_Script : MonoBehaviour
         PlayerPrefs.SetString("mapname", name);
 
         SceneManager.LoadScene("boardScene");
+
+        m_Dropdown = maps.GetComponent<Dropdown>();
+        PlayerPrefs.SetInt("mapID", m_Dropdown.value);
 
     }
 
