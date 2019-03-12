@@ -34,10 +34,10 @@ public class gameBoard : MonoBehaviour
 
         "t5, t1, t1, t1, t1, t1, t1, t5, " +
         "t1, b1, t1, t3, t3, t1, t4, t1, " +
-        "t1, t1, t1, t1, t1, t1, t1, t1, " +
+        "t1, t1, t1, t1, t1, t5, t1, t1, " +
         "t1, t3, t1, t2, t2, t1, t3, t1, " +
         "t1, t3, t1, t2, t2, t1, t3, t1, " +
-        "t1, t1, t1, t1, t1, t1, t1, t1, " +
+        "t1, t1, t5, t1, t1, t1, t1, t1, " +
         "t1, t4, t1, t3, t3, t1, b2, t1, " +
         "t5, t1, t1, t1, t1, t1, t1, t5",
 
@@ -45,7 +45,7 @@ public class gameBoard : MonoBehaviour
         "t1, t4, t1, t1, t2, t2, t1, t1, t4, t1," +
         "t1, t1, t3, t1, t1, t1, t1, t3, t1, t1," +
         "b1, t1, t3, t1, t4, t4, t1, t3, t1, b2," +
-        "t1, t1, t3, t1, t1, t1, t1, t3, t1, t1," +
+        "t1, t1, t3, t1, t5, t5, t1, t3, t1, t1," +
         "t4, t1, t1, t1, t1, t1, t1, t1, t1, t4," +
         "t1, t1, t5, t1, t2, t2, t1, t5, t1, t1," +
         "t1, t1, t1, t1, t2, t2, t1, t1, t1, t1",
@@ -54,25 +54,51 @@ public class gameBoard : MonoBehaviour
         "t1, t1, t1, t1, t1, t1, t2, t2, t2, t1," +
         "t1, t2, t2, t1, t3, t1, t2, t2, t2, t1," +
         "t1, t2, t2, t3, t3, t1, t1, t1, t4, t1," +
-        "t1, t2, t2, t1, t4, t1, t1, t1, t1, t3," +
-        "t3, t1, t1, t1, t1, t4, t1, t2, t2, t1," +
+        "t1, t2, t2, t1, t4, t5, t1, t1, t1, t3," +
+        "t3, t1, t1, t1, t5, t4, t1, t2, t2, t1," +
         "t1, t4, t1, t1, t1, t3, t3, t2, t2, t1," +
         "t1, t2, t2, t2, t1, t3, t1, t2, t2, t1," +
         "t1, t2, t2, t2, t1, t1, t1, t1, t1, t1," +
         "t5, t1, t3, t1, t1, t5, t1, t4, t1, b2"
     };
 
+    public AudioSource music1; //credit to Poss Abilities https://www.youtube.com/watch?v=xoVqj3we304&feature=youtu.be
+    public AudioSource music2; //credit to Memoraphile @ You're Perfect Studio 
+    public AudioSource music3; //credit to PetterTheSurgeon @ opengameart.org
+
+
     public AudioSource buttonClick;
     public AudioSource badButtonClick;
+
+    public AudioSource walking;
+
     public AudioSource astronautRangedCombatTier1;
     public AudioSource astronautRangedCombatTier2;
     public AudioSource astronautRangedCombatTier3;
-
-    //https://opengameart.org/content/5-hit-sounds-dying
-
     public AudioSource alienRangedCombatTier1;
     public AudioSource alienRangedCombatTier2;
     public AudioSource alienRangedCombatTier3;
+
+    public AudioSource astronautMeleeCombatTier1;
+    public AudioSource astronautMeleeCombatTier2;
+    public AudioSource astronautMeleeCombatTier3;
+    public AudioSource alienMeleeCombatTier1;
+    public AudioSource alienMeleeCombatTier2;
+    public AudioSource alienMeleeCombatTier3;
+
+    public AudioSource alienHurt1;
+    public AudioSource alienHurt2;
+    public AudioSource alienHurt3;
+    public AudioSource astronautHurt1;
+    public AudioSource astronautHurt2;
+    public AudioSource astronautHurt3;
+
+    public AudioSource astronautDeath1;
+    public AudioSource astronautDeath2;
+    public AudioSource astronautDeath3;
+    public AudioSource alienDeath1;
+    public AudioSource alienDeath2;
+    public AudioSource alienDeath3;
 
     public GameObject base1;
     public GameObject base2;
@@ -148,8 +174,25 @@ public class gameBoard : MonoBehaviour
     int highlightMapWidth;
     int highlightMapHeight;
 
+    int nextTrack = 0;
+
+    bool mouseOverButton = false;
+
+    public void mouseIsOverButton()
+    {
+        mouseOverButton = true;
+    }
+
+    public void mouseIsNotOverButton()
+    {
+        mouseOverButton = false;
+    }
+
     private void Start()
     {
+        music1.Play(0);
+        music1.volume = 0.5f;
+
         int mapID = getMapID(); //Retrieve the player-selected mapID
         int mapLength = getMapLength(mapID); //Retrieve the length of the player selected map
         int mapHeight = getMapHeight(mapID); //Retrieve the height of the player selected map
@@ -328,7 +371,7 @@ public class gameBoard : MonoBehaviour
                 if (terrainTileInstanceTypes[(int)obj.transform.position.x, (int)obj.transform.position.y] == "t5" && obj.GetComponent<unit>().isPlayerOneUnit == true)
                 {
                     player1Funds += 500;
-                    StartCoroutine(spawnAndMoveResourceNumber((int)obj.transform.position.x, (int)obj.transform.position.x, 500));
+                    StartCoroutine(spawnAndMoveResourceNumber((int)obj.transform.position.x, (int)obj.transform.position.y, 500));
                 }
             }
 
@@ -346,7 +389,7 @@ public class gameBoard : MonoBehaviour
                 if (terrainTileInstanceTypes[(int)obj.transform.position.x, (int)obj.transform.position.y] == "t5" && obj.GetComponent<unit>().isPlayerOneUnit == false)
                 {
                     player2Funds += 500;
-                    StartCoroutine(spawnAndMoveResourceNumber((int)obj.transform.position.x, (int)obj.transform.position.x, 500));
+                    StartCoroutine(spawnAndMoveResourceNumber((int)obj.transform.position.x, (int)obj.transform.position.y, 500));
                 }
             }
 
@@ -463,27 +506,27 @@ public class gameBoard : MonoBehaviour
                 {
                     unitInstance = Instantiate(melee1tier1) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f);
-                    unitInstance.GetComponent<unit>().health = 100;
-                    unitInstance.GetComponent<unit>().maxHealth = 100;
-                    unitInstance.GetComponent<unit>().attack = 20;
+                    unitInstance.GetComponent<unit>().health = 300;
+                    unitInstance.GetComponent<unit>().maxHealth = 300;
+                    unitInstance.GetComponent<unit>().attack = 30;
                     unitInstance.GetComponent<unit>().tier = 1;
                 }
                 else if (tier == 2)
                 {
                     unitInstance = Instantiate(melee1tier2) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 1.0f);
-                    unitInstance.GetComponent<unit>().health = 300;
-                    unitInstance.GetComponent<unit>().maxHealth = 300;
-                    unitInstance.GetComponent<unit>().attack = 50;
+                    unitInstance.GetComponent<unit>().health = 600;
+                    unitInstance.GetComponent<unit>().maxHealth = 600;
+                    unitInstance.GetComponent<unit>().attack = 80;
                     unitInstance.GetComponent<unit>().tier = 2;
                 }
                 else if (tier == 3)
                 {
                     unitInstance = Instantiate(melee1tier3) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 1.0f);
-                    unitInstance.GetComponent<unit>().health = 500;
-                    unitInstance.GetComponent<unit>().maxHealth = 500;
-                    unitInstance.GetComponent<unit>().attack = 90;
+                    unitInstance.GetComponent<unit>().health = 1000;
+                    unitInstance.GetComponent<unit>().maxHealth = 1000;
+                    unitInstance.GetComponent<unit>().attack = 130;
                     unitInstance.GetComponent<unit>().tier = 3;
                 }
                 unitInstance.GetComponent<unit>().maxMoveDistance = 1;
@@ -547,27 +590,27 @@ public class gameBoard : MonoBehaviour
                 {
                     unitInstance = Instantiate(melee2tier1) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f);
-                    unitInstance.GetComponent<unit>().health = 100;
-                    unitInstance.GetComponent<unit>().maxHealth = 100;
-                    unitInstance.GetComponent<unit>().attack = 20;
+                    unitInstance.GetComponent<unit>().health = 300;
+                    unitInstance.GetComponent<unit>().maxHealth = 300;
+                    unitInstance.GetComponent<unit>().attack = 30;
                     unitInstance.GetComponent<unit>().tier = 1;
                 }
                 else if (tier == 2)
                 {
                     unitInstance = Instantiate(melee2tier2) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 1.0f);
-                    unitInstance.GetComponent<unit>().health = 300;
-                    unitInstance.GetComponent<unit>().maxHealth = 300;
-                    unitInstance.GetComponent<unit>().attack = 50;
+                    unitInstance.GetComponent<unit>().health = 600;
+                    unitInstance.GetComponent<unit>().maxHealth = 600;
+                    unitInstance.GetComponent<unit>().attack = 80;
                     unitInstance.GetComponent<unit>().tier = 2;
                 }
                 else if (tier == 3)
                 {
                     unitInstance = Instantiate(melee2tier3) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 1.0f);
-                    unitInstance.GetComponent<unit>().health = 500;
-                    unitInstance.GetComponent<unit>().maxHealth = 500;
-                    unitInstance.GetComponent<unit>().attack = 90;
+                    unitInstance.GetComponent<unit>().health = 1000;
+                    unitInstance.GetComponent<unit>().maxHealth = 1000;
+                    unitInstance.GetComponent<unit>().attack = 130;
                     unitInstance.GetComponent<unit>().tier = 3;
                 }
                 unitInstance.GetComponent<unit>().maxMoveDistance = 1;
@@ -597,7 +640,47 @@ public class gameBoard : MonoBehaviour
 
     private void Update()
     {
+
+        if (music1.isPlaying == false && music2.isPlaying == false && music3.isPlaying == false)
+        {
+            nextTrack++;
+
+            if (nextTrack > 2)
+                nextTrack = 0;
+
+            if (nextTrack == 0)
+            {
+                music1.Play(0);
+                music1.volume = 0.5f;
+            }
+            else if (nextTrack == 1)
+            {
+                music2.Play(0);
+                music2.volume = 0.5f;
+            }
+            else if (nextTrack == 2)
+            {
+                music3.Play(0);
+                music3.volume = 0.5f;
+            }
+        }
+
         checkVictory();
+
+        if (spawnMenu.activeInHierarchy)
+            return;
+
+        if (askExitPanel.activeInHierarchy)
+        {
+            return;
+        }
+        else
+        {
+            mouseOverButton = false;
+        }
+
+        if (mouseOverButton)
+            return;
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -871,7 +954,7 @@ public class gameBoard : MonoBehaviour
 
         while (!arrived)
         {
-            projectile.transform.position = Vector3.MoveTowards(projectile.transform.position, desiredPosition, 1.0f * Time.deltaTime);
+            projectile.transform.position = Vector3.MoveTowards(projectile.transform.position, desiredPosition, 2.0f * Time.deltaTime);
             if (Vector3.Distance(projectile.transform.position, desiredPosition) == 0) arrived = true;
             yield return null;
         }
@@ -906,15 +989,15 @@ public class gameBoard : MonoBehaviour
         }
         else if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && attackingUnit.GetComponent<unit>().tier == 1 && attackingUnit.GetComponent<unit>().isPlayerOneUnit)
         {
-            //astronautRangedCombatTier1.Play(0);
+            astronautMeleeCombatTier1.Play(0);
         }
         else if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && attackingUnit.GetComponent<unit>().tier == 2 && attackingUnit.GetComponent<unit>().isPlayerOneUnit)
         {
-            //astronautRangedCombatTier2.Play(0);
+            astronautMeleeCombatTier2.Play(0);
         }
         else if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && attackingUnit.GetComponent<unit>().tier == 3 && attackingUnit.GetComponent<unit>().isPlayerOneUnit)
         {
-            //astronautRangedCombatTier3.Play(0);
+            astronautMeleeCombatTier3.Play(0);
         }
 
         //play attacker combat sounds if alien
@@ -932,15 +1015,15 @@ public class gameBoard : MonoBehaviour
         }
         else if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && attackingUnit.GetComponent<unit>().tier == 1 && !attackingUnit.GetComponent<unit>().isPlayerOneUnit)
         {
-            //astronautRangedCombatTier1.Play(0);
+            alienMeleeCombatTier1.Play(0);
         }
         else if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && attackingUnit.GetComponent<unit>().tier == 2 && !attackingUnit.GetComponent<unit>().isPlayerOneUnit)
         {
-            //astronautRangedCombatTier2.Play(0);
+            alienMeleeCombatTier2.Play(0);
         }
         else if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && attackingUnit.GetComponent<unit>().tier == 3 && !attackingUnit.GetComponent<unit>().isPlayerOneUnit)
         {
-            //astronautRangedCombatTier3.Play(0);
+            alienMeleeCombatTier3.Play(0);
         }
 
         //play attacker animations
@@ -990,7 +1073,7 @@ public class gameBoard : MonoBehaviour
             StartCoroutine(projectileCoroutine(defendingUnit, attackingUnit));
         }
 
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1);
 
         if (defendingUnit.GetComponent<unit>().lastFacingRight == true)
         {
@@ -1010,19 +1093,16 @@ public class gameBoard : MonoBehaviour
             attackingUnit.GetComponent<Animator>().SetTrigger("idleleft");
         }
 
-        
-        Random rnd = new Random();
-
         if (defendingUnitWithinRange)
         {
             int attack = attackingUnit.GetComponent<unit>().attack;
 
             if (attackingUnit.GetComponent<unit>().tier == 1)
-                attack = attack + (Random.Range(-2, 2));
+                attack = attack + (Random.Range(-2, 3));
             else if (attackingUnit.GetComponent<unit>().tier == 3)
-                attack = attack + (Random.Range(-5, 5));
+                attack = attack + (Random.Range(-5, 6));
             else if (attackingUnit.GetComponent<unit>().tier == 3)
-                attack = attack + (Random.Range(-10, 10));
+                attack = attack + (Random.Range(-10, 11));
 
             StartCoroutine(HurtCoroutine(attackingUnit, defendingUnit, attack));
         }
@@ -1032,11 +1112,11 @@ public class gameBoard : MonoBehaviour
             int attack = defendingUnit.GetComponent<unit>().attack;
 
             if (attackingUnit.GetComponent<unit>().tier == 1)
-                attack = attack + (Random.Range(-2, 2));
+                attack = attack + (Random.Range(-2, 3));
             else if (attackingUnit.GetComponent<unit>().tier == 3)
-                attack = attack + (Random.Range(-5, 5));
+                attack = attack + (Random.Range(-5, 6));
             else if (attackingUnit.GetComponent<unit>().tier == 3)
-                attack = attack + (Random.Range(-10, 10));
+                attack = attack + (Random.Range(-10, 11));
 
             StartCoroutine(HurtCoroutine(defendingUnit, attackingUnit, attack));
         }
@@ -1045,7 +1125,7 @@ public class gameBoard : MonoBehaviour
     public IEnumerator HurtCoroutine(GameObject attackingUnit, GameObject unit, int damageTaken)
     {
 
-        //if health is above zero for unit, play hurt animation
+        //if health is above zero for unit, play hurt animation and SFX
 
         for (var n = 0; n < 5; n++)
         {
@@ -1091,6 +1171,75 @@ public class gameBoard : MonoBehaviour
             GameObject explosionObject = Instantiate(explosion) as GameObject;
             explosionObject.transform.position = new Vector3(unitPosX, unitPosY, -2);
             Destroy(explosionObject, 1.0f);
+
+            if (unit.GetComponent<unit>().isPlayerOneUnit == false)
+            {
+                int randomHurt = Random.Range(1, 4);
+                if (randomHurt == 1)
+                {
+                    alienDeath1.Play(0);
+                }
+                else if (randomHurt == 2)
+                {
+                    alienDeath2.Play(0);
+                }
+                else if (randomHurt == 3)
+                {
+                    alienDeath3.Play(0);
+                }
+            }
+            else
+            {
+                int randomHurt = Random.Range(1, 4);
+                if (randomHurt == 1)
+                {
+                    astronautDeath1.Play(0);
+                }
+                else if (randomHurt == 2)
+                {
+                    astronautDeath2.Play(0);
+                }
+                else if (randomHurt == 3)
+                {
+                    astronautDeath3.Play(0);
+                }
+            }
+
+        }
+        else
+        {
+            if (unit.GetComponent<unit>().isPlayerOneUnit == false)
+            {
+                int randomHurt = Random.Range(1, 4);
+                if (randomHurt == 1)
+                {
+                    alienHurt1.Play(0);
+                }
+                else if (randomHurt == 2)
+                {
+                    alienHurt2.Play(0);
+                }
+                else if (randomHurt == 3)
+                {
+                    alienHurt3.Play(0);
+                }
+            }
+            else
+            {
+                int randomHurt = Random.Range(1, 4);
+                if (randomHurt == 1)
+                {
+                    astronautHurt1.Play(0);
+                }
+                else if (randomHurt == 2)
+                {
+                    astronautHurt2.Play(0);
+                }
+                else if (randomHurt == 3)
+                {
+                    astronautHurt3.Play(0);
+                }
+            }
         }
 
         yield return null;
@@ -1155,6 +1304,8 @@ public class gameBoard : MonoBehaviour
     //move unit up/down first
     public IEnumerator MovementCoroutine1(GameObject selectedUnit, Vector3 desiredPosition)
     {
+        walking.Play(0);
+
         bool arrived = false;
 
         Vector3 desiredPositionVertical = desiredPosition;
@@ -1173,12 +1324,14 @@ public class gameBoard : MonoBehaviour
 
         while (!arrived)
         {
-            selectedUnit.transform.position = Vector3.MoveTowards(selectedUnit.transform.position, desiredPositionVertical, 1.0f * Time.deltaTime);
+            selectedUnit.transform.position = Vector3.MoveTowards(selectedUnit.transform.position, desiredPositionVertical, 2.0f * Time.deltaTime);
             if (Vector3.Distance(selectedUnit.transform.position, desiredPositionVertical) == 0) arrived = true;
             yield return null;
         }
         if (arrived)
         {
+            walking.Stop();
+
             if (desiredPosition.x - selectedUnit.transform.position.x == 0.0f)
             {
                 selectedUnit.GetComponent<unit>().unitWasMoved = true;
@@ -1209,6 +1362,8 @@ public class gameBoard : MonoBehaviour
     //move unit left/right last
     public IEnumerator MovementCoroutine2(GameObject selectedUnit, Vector3 desiredPosition)
     {
+        walking.Play(0);
+
         bool arrived = false;
 
         Vector3 desiredPositionHorizontal = desiredPosition;
@@ -1231,12 +1386,14 @@ public class gameBoard : MonoBehaviour
 
         while (!arrived)
         {
-            selectedUnit.transform.position = Vector3.MoveTowards(selectedUnit.transform.position, desiredPositionHorizontal, 1.0f * Time.deltaTime);
+            selectedUnit.transform.position = Vector3.MoveTowards(selectedUnit.transform.position, desiredPositionHorizontal, 2.0f * Time.deltaTime);
             if (Vector3.Distance(selectedUnit.transform.position, desiredPositionHorizontal) == 0) arrived = true;
             yield return null;
         }
         if (arrived)
         {
+            walking.Stop();
+
             selectedUnit.GetComponent<unit>().unitWasMoved = true;
             if (isPlayerOneTurn && selectedUnit.GetComponent<unit>().isPlayerOneUnit == true)
             {
