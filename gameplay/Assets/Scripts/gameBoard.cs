@@ -10,11 +10,12 @@ public class gameBoard : MonoBehaviour
 {
     public static gameBoard Instance { set; get; }
 
-    private string[,] terrainTileInstanceTypes;
-    private GameObject[,] unitTileInstances;
+    private string[,] terrainTileInstanceTypes; //keeps track of what terrain type is in each spot
+    private GameObject[,] unitTileInstances; //keeps track of what units are in each spot
 
-    public Vector2 terrainSize;
+    public Vector2 terrainSize; //keeps track of terrain map size
 
+    //holds the maps
     private string[] maps = {
         "t1, t1, t1, t1, t1, t1, t1, t1, t1, t2, t2, t1, t1, t1, t1, t1, t1, t1, t1, t1, "+
         "t1, t5, t3, t1, t1, t1, t4, t1, t1, t2, t2, t2, t1, t5, t1, t1, t1, t1, b2, t1, "+
@@ -62,37 +63,33 @@ public class gameBoard : MonoBehaviour
         "t5, t1, t3, t1, t1, t5, t1, t4, t1, b2"
     };
 
+    /*AUDIO FILES */
+
     public AudioSource music1; //credit to Poss Abilities https://www.youtube.com/watch?v=xoVqj3we304&feature=youtu.be
     public AudioSource music2; //credit to Memoraphile @ You're Perfect Studio 
     public AudioSource music3; //credit to PetterTheSurgeon @ opengameart.org
 
-
     public AudioSource buttonClick;
     public AudioSource badButtonClick;
-
     public AudioSource walking;
-
     public AudioSource astronautRangedCombatTier1;
     public AudioSource astronautRangedCombatTier2;
     public AudioSource astronautRangedCombatTier3;
     public AudioSource alienRangedCombatTier1;
     public AudioSource alienRangedCombatTier2;
     public AudioSource alienRangedCombatTier3;
-
     public AudioSource astronautMeleeCombatTier1;
     public AudioSource astronautMeleeCombatTier2;
     public AudioSource astronautMeleeCombatTier3;
     public AudioSource alienMeleeCombatTier1;
     public AudioSource alienMeleeCombatTier2;
     public AudioSource alienMeleeCombatTier3;
-
     public AudioSource alienHurt1;
     public AudioSource alienHurt2;
     public AudioSource alienHurt3;
     public AudioSource astronautHurt1;
     public AudioSource astronautHurt2;
     public AudioSource astronautHurt3;
-
     public AudioSource astronautDeath1;
     public AudioSource astronautDeath2;
     public AudioSource astronautDeath3;
@@ -100,11 +97,16 @@ public class gameBoard : MonoBehaviour
     public AudioSource alienDeath2;
     public AudioSource alienDeath3;
 
+    /* GAMEOBJECT VARIABLES */
+
+    //terrain tile game objects
     public GameObject base1;
     public GameObject base2;
     public GameObject terrain1;
     public GameObject terrain2;
-
+    public GameObject terrain3;
+    public GameObject terrain4;
+    public GameObject terrain5;
     public GameObject topRightImpassable;
     public GameObject bottomLeftMostlyAcid;
     public GameObject topRightMostlyAcid;
@@ -119,11 +121,7 @@ public class gameBoard : MonoBehaviour
     public GameObject bottomLeftGround;
     public GameObject center;
 
-    public GameObject terrain3;
-    public GameObject terrain4;
-
-    public GameObject terrain5;
-
+    //unit game objects
     public GameObject melee1tier1;
     public GameObject melee1tier2;
     public GameObject melee2tier1;
@@ -137,21 +135,21 @@ public class gameBoard : MonoBehaviour
     public GameObject ranged2tier2;
     public GameObject ranged2tier3;
 
+    //projectile game objects
     public GameObject alienProjectile;
     public GameObject atronautProjectile;
 
+    //unit selection, base location, spawning helpers game objects
     public GameObject selectedUnit;
     public GameObject lightBlueValidMoveTile;
     public GameObject spawnMenu;
-
     public GameObject explosion;
     public GameObject hurtText;
-
     private Vector2 lastClicked;
     private Vector2 baseLocation1;
     private Vector2 baseLocation2;
 
-    private bool isPlayerOneTurn;
+    private bool isPlayerOneTurn; //keeps track of what turn it is
 
     public int player1Funds, player2Funds;
     public Text fundsTextBox;
@@ -160,8 +158,10 @@ public class gameBoard : MonoBehaviour
     public GameObject showPlayer1UnitSelection;
     public GameObject showPlayer2UnitSelection;
 
-    private int score;
+    private int player1Score;
+    private int player2Score;
 
+    //victory states / menus
     private bool checkingVictory;
     public GameObject victoryPanel;
     public GameObject showPlayer1Victory;
@@ -171,18 +171,22 @@ public class gameBoard : MonoBehaviour
 
     bool spawnMenuActive;
 
+    //keeps track of map height/width for the highlight moves gameobject
     int highlightMapWidth;
     int highlightMapHeight;
 
     int nextTrack = 0;
 
+    //if mouse over a button, don't select or move units
     bool mouseOverButton = false;
 
+    //disable unit selection / movement if mouse is over a button
     public void mouseIsOverButton()
     {
         mouseOverButton = true;
     }
 
+    //disable unit selection / movement if mouse is over a button
     public void mouseIsNotOverButton()
     {
         mouseOverButton = false;
@@ -193,40 +197,32 @@ public class gameBoard : MonoBehaviour
         music1.Play(0);
         music1.volume = 0.5f;
 
+        //load in map variables
         int mapID = getMapID(); //Retrieve the player-selected mapID
         int mapLength = getMapLength(mapID); //Retrieve the length of the player selected map
         int mapHeight = getMapHeight(mapID); //Retrieve the height of the player selected map
-
         PlayerPrefs.SetInt("mapwidth", mapLength);
         PlayerPrefs.SetInt("mapheight", mapHeight);
-
         highlightMapWidth = mapLength;
         highlightMapHeight = mapHeight;
 
+        //set victory to false
         checkingVictory = true;
         showPlayer1Victory.SetActive(false);
         showPlayer2Victory.SetActive(false);
 
         spawnMenuActive = false;
 
-        score = 20;
+        player1Score = player2Score = 0;
 
-
-        //string map = PlayerPrefs.GetString("mapname");
-
-        //if (String.Compare(map, "\"a_nice_map1\"") == 0)
-        //{
-        //load map
+        //load the map
         loadMap();
-        //}
-
-        
-
 
         Instance = this;
 
         selectedUnit = null;
 
+        //initialize terrain states
         for (int i = 0; i < getMapLength(getMapID()); i++)
             for (int j = 0; j < getMapHeight(getMapID()); j++)
                 unitTileInstances[i, j] = null;
@@ -244,7 +240,7 @@ public class gameBoard : MonoBehaviour
         showPlayer1UnitSelection.SetActive(false);
         showPlayer2UnitSelection.SetActive(false);
 
-        //initialize default values
+        //initialize default funds
         player1Funds = player2Funds = 5000;
 
         if (isPlayerOneTurn)
@@ -255,7 +251,6 @@ public class gameBoard : MonoBehaviour
         {
             showPlayer2UnitSelection.SetActive(true);
         }
-
     }
 
     public void makeExitPanelVisible()
@@ -310,9 +305,6 @@ public class gameBoard : MonoBehaviour
         int mapLength = getMapLength(mapID); //Retrieve the length of the player selected map
         int mapHeight = getMapHeight(mapID); //Retrieve the height of the player selected map
 
-        //PlayerPrefs.SetInt("mapwidth", mapLength);
-        //PlayerPrefs.SetInt("mapheight", mapHeight);
-
         highlightMapWidth = mapLength;
         highlightMapHeight = mapHeight;
 
@@ -353,16 +345,17 @@ public class gameBoard : MonoBehaviour
 
         eraseValidMoveTiles();
 
+        selectedUnit = null;
+
         if (spawnMenuActive)
         {
             displaySpawnMenu();
         }
 
-        //count resource tiles
-        //int aquiredResourceTiles = 0
-
         isPlayerOneTurn = !isPlayerOneTurn;
 
+        //count any resource tiles a player is on and add bonus points to that player
+        //add 1000 in funds to player at start of their turn
         if (isPlayerOneTurn)
         {
             var units = GameObject.FindGameObjectsWithTag("unit");
@@ -402,6 +395,7 @@ public class gameBoard : MonoBehaviour
         resetUnitProperties();
     }
 
+    //displays "Player 1 Turn" text on beginning of player 1 turn
     private IEnumerator displayPlayer1Turn()
     {
         showPlayer2Turn.SetActive(false);
@@ -410,6 +404,7 @@ public class gameBoard : MonoBehaviour
         showPlayer1Turn.SetActive(false);
     }
 
+    //displays "Player 2 Turn" text on beginning of player 2 turn
     private IEnumerator displayPlayer2Turn()
     {
         showPlayer1Turn.SetActive(false);
@@ -418,6 +413,7 @@ public class gameBoard : MonoBehaviour
         showPlayer2Turn.SetActive(false);
     }
 
+    //display spawn menu of "Unit Purchase" is clicked
     public void displaySpawnMenu()
     {
         buttonClick.Play(0);
@@ -432,38 +428,37 @@ public class gameBoard : MonoBehaviour
 
     }
 
+    //spawn the appropriate unit based on what was clicked in the spawn menu
     public void spawnMeleeUnitTierOne()
     {
         spawnUnit("melee", 1, 1000);
     }
-
     public void spawnMeleeUnitTierTwo()
     {
         spawnUnit("melee", 2, 2000);
     }
-
     public void spawnMeleeUnitTierThree()
     {
         spawnUnit("melee", 3, 3000);
     }
-
     public void spawnRangedUnitTierOne()
     {
         spawnUnit("ranged", 1, 1000);
     }
-
     public void spawnRangedUnitTierTwo()
     {
         spawnUnit("ranged", 2, 2000);
     }
-
     public void spawnRangedUnitTierThree()
     {
         spawnUnit("ranged", 3, 3000);
     }
 
+    //spawn a unit
     public void spawnUnit(string type, int tier, int cost)
     {
+        //if player has enough funds to buy a unit and their is no unit in their base, then spawn a new unit at their base
+
         if (isPlayerOneTurn && unitTileInstances[(int)baseLocation1.x, (int)baseLocation1.y] == null && player1Funds - cost >= 0)
         {
             GameObject unitInstance = null;
@@ -484,9 +479,9 @@ public class gameBoard : MonoBehaviour
                     unitInstance = Instantiate(ranged1tier2) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 1.0f);
                     unitInstance.GetComponent<unit>().maxMoveDistance = 2;
-                    unitInstance.GetComponent<unit>().health = 300;
-                    unitInstance.GetComponent<unit>().maxHealth = 300;
-                    unitInstance.GetComponent<unit>().attack = 50;
+                    unitInstance.GetComponent<unit>().health = 175;
+                    unitInstance.GetComponent<unit>().maxHealth = 175;
+                    unitInstance.GetComponent<unit>().attack = 40;
                     unitInstance.GetComponent<unit>().tier = 2;
                 }
                 else if (tier == 3)
@@ -494,9 +489,9 @@ public class gameBoard : MonoBehaviour
                     unitInstance = Instantiate(ranged1tier3) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 1.0f);
                     unitInstance.GetComponent<unit>().maxMoveDistance = 3;
-                    unitInstance.GetComponent<unit>().health = 500;
-                    unitInstance.GetComponent<unit>().maxHealth = 500;
-                    unitInstance.GetComponent<unit>().attack = 90;
+                    unitInstance.GetComponent<unit>().health = 250;
+                    unitInstance.GetComponent<unit>().maxHealth = 250;
+                    unitInstance.GetComponent<unit>().attack = 50;
                     unitInstance.GetComponent<unit>().tier = 3;
                 }
             }
@@ -506,8 +501,8 @@ public class gameBoard : MonoBehaviour
                 {
                     unitInstance = Instantiate(melee1tier1) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f);
-                    unitInstance.GetComponent<unit>().health = 300;
-                    unitInstance.GetComponent<unit>().maxHealth = 300;
+                    unitInstance.GetComponent<unit>().health = 200;
+                    unitInstance.GetComponent<unit>().maxHealth = 200;
                     unitInstance.GetComponent<unit>().attack = 30;
                     unitInstance.GetComponent<unit>().tier = 1;
                 }
@@ -515,18 +510,18 @@ public class gameBoard : MonoBehaviour
                 {
                     unitInstance = Instantiate(melee1tier2) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 1.0f);
-                    unitInstance.GetComponent<unit>().health = 600;
-                    unitInstance.GetComponent<unit>().maxHealth = 600;
-                    unitInstance.GetComponent<unit>().attack = 80;
+                    unitInstance.GetComponent<unit>().health = 300;
+                    unitInstance.GetComponent<unit>().maxHealth = 300;
+                    unitInstance.GetComponent<unit>().attack = 50;
                     unitInstance.GetComponent<unit>().tier = 2;
                 }
                 else if (tier == 3)
                 {
                     unitInstance = Instantiate(melee1tier3) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 1.0f);
-                    unitInstance.GetComponent<unit>().health = 1000;
-                    unitInstance.GetComponent<unit>().maxHealth = 1000;
-                    unitInstance.GetComponent<unit>().attack = 130;
+                    unitInstance.GetComponent<unit>().health = 400;
+                    unitInstance.GetComponent<unit>().maxHealth = 400;
+                    unitInstance.GetComponent<unit>().attack = 70;
                     unitInstance.GetComponent<unit>().tier = 3;
                 }
                 unitInstance.GetComponent<unit>().maxMoveDistance = 1;
@@ -545,7 +540,7 @@ public class gameBoard : MonoBehaviour
                 unitInstance.GetComponent<Animator>().SetTrigger("idleleft");
             }
             unitTileInstances[(int)baseLocation1.x, (int)baseLocation1.y] = unitInstance;
-            player1Funds -= cost;
+            player1Funds -= cost; //subtract funds
 
             displaySpawnMenu();
 
@@ -568,9 +563,9 @@ public class gameBoard : MonoBehaviour
                     unitInstance = Instantiate(ranged2tier2) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 1.0f);
                     unitInstance.GetComponent<unit>().maxMoveDistance = 2;
-                    unitInstance.GetComponent<unit>().health = 300;
-                    unitInstance.GetComponent<unit>().maxHealth = 300;
-                    unitInstance.GetComponent<unit>().attack = 50;
+                    unitInstance.GetComponent<unit>().health = 175;
+                    unitInstance.GetComponent<unit>().maxHealth = 175;
+                    unitInstance.GetComponent<unit>().attack = 40;
                     unitInstance.GetComponent<unit>().tier = 2;
                 }
                 else if (tier == 3)
@@ -578,9 +573,9 @@ public class gameBoard : MonoBehaviour
                     unitInstance = Instantiate(ranged2tier3) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 1.0f);
                     unitInstance.GetComponent<unit>().maxMoveDistance = 3;
-                    unitInstance.GetComponent<unit>().health = 500;
-                    unitInstance.GetComponent<unit>().maxHealth = 500;
-                    unitInstance.GetComponent<unit>().attack = 90;
+                    unitInstance.GetComponent<unit>().health = 250;
+                    unitInstance.GetComponent<unit>().maxHealth = 250;
+                    unitInstance.GetComponent<unit>().attack = 50;
                     unitInstance.GetComponent<unit>().tier = 3;
                 }
                 
@@ -590,8 +585,8 @@ public class gameBoard : MonoBehaviour
                 {
                     unitInstance = Instantiate(melee2tier1) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 1.0f, 0.0f);
-                    unitInstance.GetComponent<unit>().health = 300;
-                    unitInstance.GetComponent<unit>().maxHealth = 300;
+                    unitInstance.GetComponent<unit>().health = 200;
+                    unitInstance.GetComponent<unit>().maxHealth = 200;
                     unitInstance.GetComponent<unit>().attack = 30;
                     unitInstance.GetComponent<unit>().tier = 1;
                 }
@@ -599,18 +594,18 @@ public class gameBoard : MonoBehaviour
                 {
                     unitInstance = Instantiate(melee2tier2) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 1.0f);
-                    unitInstance.GetComponent<unit>().health = 600;
-                    unitInstance.GetComponent<unit>().maxHealth = 600;
-                    unitInstance.GetComponent<unit>().attack = 80;
+                    unitInstance.GetComponent<unit>().health = 300;
+                    unitInstance.GetComponent<unit>().maxHealth = 300;
+                    unitInstance.GetComponent<unit>().attack = 50;
                     unitInstance.GetComponent<unit>().tier = 2;
                 }
                 else if (tier == 3)
                 {
                     unitInstance = Instantiate(melee2tier3) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.0f, 1.0f);
-                    unitInstance.GetComponent<unit>().health = 1000;
-                    unitInstance.GetComponent<unit>().maxHealth = 1000;
-                    unitInstance.GetComponent<unit>().attack = 130;
+                    unitInstance.GetComponent<unit>().health = 400;
+                    unitInstance.GetComponent<unit>().maxHealth = 400;
+                    unitInstance.GetComponent<unit>().attack = 70;
                     unitInstance.GetComponent<unit>().tier = 3;
                 }
                 unitInstance.GetComponent<unit>().maxMoveDistance = 1;
@@ -629,7 +624,7 @@ public class gameBoard : MonoBehaviour
                 unitInstance.GetComponent<Animator>().SetTrigger("idleleft");
             }
             unitTileInstances[(int)baseLocation2.x, (int)baseLocation2.y] = unitInstance;
-            player2Funds -= cost;
+            player2Funds -= cost; //subtract funds
 
             displaySpawnMenu();
         } else
@@ -640,7 +635,7 @@ public class gameBoard : MonoBehaviour
 
     private void Update()
     {
-
+        //cycle through music during gameplay
         if (music1.isPlaying == false && music2.isPlaying == false && music3.isPlaying == false)
         {
             nextTrack++;
@@ -667,6 +662,8 @@ public class gameBoard : MonoBehaviour
 
         checkVictory();
 
+
+        //check if any menus are open and if so, don't do any unit combat / movement / selection
         if (spawnMenu.activeInHierarchy)
             return;
 
@@ -682,9 +679,10 @@ public class gameBoard : MonoBehaviour
         if (mouseOverButton)
             return;
 
+        //get position of mouse for unit selection / movement / combat
         if (Input.GetMouseButtonDown(0))
         {
-            RaycastHit hit;
+            RaycastHit hit; //get the position of the mouse click
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 25.0f, LayerMask.GetMask("BoardLayer")))
             {
                 int currMouseX = (int)Mathf.Round((hit.point.x));
@@ -696,8 +694,8 @@ public class gameBoard : MonoBehaviour
                 if (this.terrainTileInstanceTypes[currMouseX, currMouseY] == "t2")
                     return;
 
-                    //if spot is empty move selected unit there
-                    if (unitTileInstances[currMouseX, currMouseY] == null)
+                //if spot is empty move selected unit there
+                if (unitTileInstances[currMouseX, currMouseY] == null)
                 {
                     if (selectedUnit == null)
                         return;
@@ -707,9 +705,10 @@ public class gameBoard : MonoBehaviour
                         return;
                     } else
                     {
-                        //selectedUnit.transform.position = new Vector3(currMouseX, currMouseY, -2);
+                        //store destination position
                         Vector3 desiredPosition = new Vector3(currMouseX, currMouseY, -2);
 
+                        //if melee unit, only allow one movement to adjacent tiles
                         if (selectedUnit.GetComponent<unit>().typeOfUnit == "melee")
                         {
                             if ((currMouseX == selectedUnit.transform.position.x + 1 && currMouseY == selectedUnit.transform.position.y + 1) ||
@@ -720,26 +719,25 @@ public class gameBoard : MonoBehaviour
                                 return;
                             }
                         }
-                        //transform.position = Vector3.MoveTowards(selectedUnit.transform.position, desiredPosition, 1.0f * Time.deltaTime);
+
+                        //move unit to unoccupied tile
                         StartCoroutine(MovementCoroutine1(selectedUnit, desiredPosition));
 
                         unitTileInstances[(int)lastClicked.x, (int)lastClicked.y] = null;
                         
                         unitTileInstances[currMouseX, currMouseY] = selectedUnit;
-                        //unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().unitWasMoved = true;
-                        //unitTileInstances[currMouseX, currMouseY].GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.4f);
 
                         selectedUnit = null;
                         lastClicked.x = Mathf.Round((hit.point.x));
                         lastClicked.y = Mathf.Round((hit.point.y));
 
                         eraseValidMoveTiles();
-
                         
                         return;
                     }
                 }
-                //if player 1 moving to attack player 2 unit
+
+                //if player 1 moving to attack player 2 unit, do combat if enemy unit is within range of player 1
                 else if (isPlayerOneTurn && !unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit 
                     && selectedUnit != null && selectedUnit.GetComponent<unit>().unitWasMoved == false) 
                 {
@@ -752,7 +750,7 @@ public class gameBoard : MonoBehaviour
                     selectedUnit = null;
                     eraseValidMoveTiles();
                 }
-                //if player 2 moving to attack player 1 unit
+                //if player 2 moving to attack player 1 unit, do combat if enemy unit is within range of player 2
                 else if (!isPlayerOneTurn && unitTileInstances[currMouseX, currMouseY].GetComponent<unit>().isPlayerOneUnit 
                     && selectedUnit != null && selectedUnit.GetComponent<unit>().unitWasMoved == false)
                 {
@@ -766,7 +764,7 @@ public class gameBoard : MonoBehaviour
                     eraseValidMoveTiles();
                 }
 
-                //select a unit
+                //select unit (unit selection)
                 if (unitTileInstances[currMouseX, currMouseY] != null)
                 {
 
@@ -808,7 +806,14 @@ public class gameBoard : MonoBehaviour
     public void submitScore()
     {
         PlayerPrefs.SetInt("gameWasPlayed", 1);
-        PlayerPrefs.SetInt("score", score);
+        if (showPlayer1Victory)
+        {
+            PlayerPrefs.SetInt("score", player1Score);
+        }
+        else
+        {
+            PlayerPrefs.SetInt("score", player2Score);
+        }
         SceneManager.LoadScene("Crater_Clash_MainMenu");
     }
 
@@ -857,6 +862,8 @@ public class gameBoard : MonoBehaviour
         victoryPanel.SetActive(!victoryPanel.activeInHierarchy);
     }
 
+    //if player1 unit goes onto player2 base or
+    //player2 unit goes onto player1 base, show victory for appropriate player and ask to submit score
     public void checkVictory()
     {
         if (checkingVictory)
@@ -887,6 +894,7 @@ public class gameBoard : MonoBehaviour
         }
     }
 
+    //check if defendingUnit is within attackingUnit's range
     public bool isDefendingWithinAttacking(GameObject attackingUnit, GameObject defendingUnit)
     {
         bool defendingUnitWithinRange = false;
@@ -921,6 +929,7 @@ public class gameBoard : MonoBehaviour
         return defendingUnitWithinRange;
     }
 
+    //launch a projectile starting at attackingUnit going towards defendingUnit
     public IEnumerator projectileCoroutine(GameObject attackingUnit, GameObject defendingUnit)
     {
         bool arrived = false;
@@ -965,6 +974,7 @@ public class gameBoard : MonoBehaviour
     }
 
     //combat coroutine
+    //if defendingUnit is within attackingUnit range, have attacking unit to combat animation and attack defendingUnit
     public IEnumerator CombatCoroutine(GameObject attackingUnit, GameObject defendingUnit)
     {
         //if defending unit is not within range of attack unit, break
@@ -1075,6 +1085,7 @@ public class gameBoard : MonoBehaviour
 
         yield return new WaitForSeconds(1);
 
+        //after combat animation, resume to idle animation
         if (defendingUnit.GetComponent<unit>().lastFacingRight == true)
         {
             defendingUnit.GetComponent<Animator>().SetTrigger("idleright");
@@ -1093,6 +1104,7 @@ public class gameBoard : MonoBehaviour
             attackingUnit.GetComponent<Animator>().SetTrigger("idleleft");
         }
 
+        //if defending unit is within range of attacker, have attacker attack
         if (defendingUnitWithinRange)
         {
             int attack = attackingUnit.GetComponent<unit>().attack;
@@ -1107,6 +1119,7 @@ public class gameBoard : MonoBehaviour
             StartCoroutine(HurtCoroutine(attackingUnit, defendingUnit, attack));
         }
 
+        //if attacking unit is within range of defender, have defender attack
         if (attackingUnitWithinRange)
         {
             int attack = defendingUnit.GetComponent<unit>().attack;
@@ -1137,30 +1150,40 @@ public class gameBoard : MonoBehaviour
         unit.GetComponent<Renderer>().enabled = true;
 
         if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && unit.GetComponent<unit>().typeOfUnit == "ranged")
-            damageTaken = (int)((float)damageTaken * 1.30f);
+            damageTaken = (int)((float)damageTaken * 1.70f);
 
         if (terrainTileInstanceTypes[(int)unit.transform.position.x, (int)unit.transform.position.y] == "t4")
-            damageTaken = (int)((float)damageTaken * 1.30f);
+            damageTaken = (int)((float)damageTaken * 1.40f);
         else if (terrainTileInstanceTypes[(int)unit.transform.position.x, (int)unit.transform.position.y] == "t3")
-            damageTaken = (int)((float)damageTaken * 0.70f);
+            damageTaken = (int)((float)damageTaken * 0.60f);
         
         unit.GetComponent<unit>().health -= damageTaken;
 
+        //spawn damage amount above hurt player
         StartCoroutine(spawnAndMoveHurtNumber((int)unit.transform.position.x, (int)unit.transform.position.y, damageTaken));
 
+        //if done with attacking unit, make transparent to show you cannot do anything with it (move, attack, etc.)
         if (isPlayerOneTurn && attackingUnit.GetComponent<unit>().isPlayerOneUnit)
         {
-            //Debug.Log("test");
             attackingUnit.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.2f);
         }
         if (!isPlayerOneTurn && !attackingUnit.GetComponent<unit>().isPlayerOneUnit)
         {
-            //Debug.Log("test2");
             attackingUnit.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.2f);
         }
 
+        //if health below zero, destroy unit
         if (unit.GetComponent<unit>().health <= 0)
         {
+            if (unit.GetComponent<unit>().isPlayerOneUnit == true)
+            {
+                player2Score += 10;
+            }
+            else
+            {
+                player1Score += 10;
+            }
+
             int unitPosX = (int)unit.transform.position.x;
             int unitPosY = (int)unit.transform.position.y;
 
@@ -1172,6 +1195,7 @@ public class gameBoard : MonoBehaviour
             explosionObject.transform.position = new Vector3(unitPosX, unitPosY, -2);
             Destroy(explosionObject, 1.0f);
 
+            //play death sound
             if (unit.GetComponent<unit>().isPlayerOneUnit == false)
             {
                 int randomHurt = Random.Range(1, 4);
@@ -1245,6 +1269,7 @@ public class gameBoard : MonoBehaviour
         yield return null;
     }
 
+    //spawn attack damage amount above hurt player
     public IEnumerator spawnAndMoveHurtNumber(int startX, int startY, int attackDamage)
     {
         GameObject gameObjectText = Instantiate(hurtText) as GameObject;
@@ -1273,6 +1298,7 @@ public class gameBoard : MonoBehaviour
         }
     }
 
+    //spawn resource amount gained above resource tile if player unit is on it
     public IEnumerator spawnAndMoveResourceNumber(int startX, int startY, int resourceAmount)
     {
         GameObject gameObjectText = Instantiate(hurtText) as GameObject;
@@ -1415,6 +1441,7 @@ public class gameBoard : MonoBehaviour
         }
     }
 
+    //reset all units to be ready to move next turn
     private void resetUnitProperties()
     {
         var units = GameObject.FindGameObjectsWithTag("unit");
@@ -1425,6 +1452,7 @@ public class gameBoard : MonoBehaviour
         }
     }
 
+    //erase the transparent blue movement suggestion tiles
     private void eraseValidMoveTiles()
     {
         var validMoveTilesPresent = GameObject.FindGameObjectsWithTag("ValidMove");
@@ -1434,6 +1462,7 @@ public class gameBoard : MonoBehaviour
         }
     }
 
+    //draw the transparent blue movement suggestion tiles
     private void drawValidMoveTiles(int x, int y, string unitType)
     {
         int maxMoveDistance = selectedUnit.GetComponent<unit>().maxMoveDistance;
@@ -1473,6 +1502,7 @@ public class gameBoard : MonoBehaviour
         }
     }
 
+    //used to generate the map
     private string checkSurroundings(string[,] terrainInput, int mapLength, int mapHeight, int i, int j)
     {
         if (i > 0 && j > 0 && i < mapLength - 1 && j < mapHeight - 1)
@@ -1755,6 +1785,7 @@ public class gameBoard : MonoBehaviour
         return "t";
     }
 
+    //initialize the map. fill in terrainTileInstanceTypes with the appropriate tiles
     private void initializeTerrain(string[,] terrainInput, int mapLength, int mapHeight)
     {
 

@@ -22,7 +22,6 @@ public class MainMenu_Script : MonoBehaviour
 
     public GameObject panel_main;
     public GameObject panel_host;
-    public GameObject panel_find;
     public GameObject panel_scores;
     public GameObject panel_options;
     public GameObject panel_credits;
@@ -61,34 +60,6 @@ public class MainMenu_Script : MonoBehaviour
         m_Dropdown = maps.GetComponent<Dropdown>();
         PlayerPrefs.SetInt("mapID", m_Dropdown.value);
 
-    }
-
-    //NOTE: FEATURE NO LONGER USED. IGNORE THIS FUNCTION.
-    //this function gets an ip address, checks if the format is valid (e.g. "192.168.137.1" is okay but "sh2@hd" is not okay)
-    //and returns true for valid or false for invalid.
-    public bool panel_find_clean_address(string address)
-    {
-        //You will have to edit this
-        /*if (address is correct format)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }*/
-
-        return true;
-    }
-
-    //NOTE: FEATURE NO LONGER USED. IGNORE THIS FUNCTION.
-    //this function will attempt to join a game given an address. If fails then do nothing.
-    public bool panel_find_start(string address)
-    {
-        //Add your code to switch to the game that was found given the address
-        //If game cannot be found then do nothing and let this function return false.
-
-        return true;
     }
 
     void Start()
@@ -149,10 +120,6 @@ public class MainMenu_Script : MonoBehaviour
                 panel_host.SetActive(true);
                 panel_curr = panel_host;
                 break;
-            case 1: //Find
-                panel_find.SetActive(true);
-                panel_curr = panel_find;
-                break;
             case 2: //Scores
                 panel_scores.SetActive(true);
                 panel_curr = panel_scores;
@@ -172,10 +139,6 @@ public class MainMenu_Script : MonoBehaviour
                 panel_tutorial.SetActive(true);
                 panel_curr = panel_tutorial;
                 break;
-            case 7: //submitScores
-                //panel_submitScores.SetActive(true);
-                //panel_curr = panel_submitScores;
-                //break;
             default:
                 Debug.LogError("CRITICAL ERROR: buttons_main_menu()");
                 break;

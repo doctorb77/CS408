@@ -53,7 +53,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\CraterClash_MainMenu\FindGame_Script.cs" />
      <Compile Include="Assets\CraterClash_MainMenu\HostGame_Script.cs" />
      <Compile Include="Assets\CraterClash_MainMenu\MainMenu_Script.cs" />
      <Compile Include="Assets\CraterClash_MainMenu\Nebula Skyboxes\Scripts\ColorPicker_Material.cs" />

@@ -35,19 +35,6 @@ public class HostGame_Script : MonoBehaviour
         
     }
 
-    //send parameters to start an online game
-    public void online()
-    {
-        if (generated)
-        {
-            main.panel_host_start(text_dropdown_map_name.text, int_map_size, true, true);
-        }
-        else
-        {
-            main.panel_host_start(text_dropdown_map_name.text, int_map_size, true, false);
-        }
-    }
-
     //send parameters to start a hotseat game
     public void hotseat()
     {

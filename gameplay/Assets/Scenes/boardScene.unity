@@ -965,9 +965,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 0.6
-  m_Text: 'HP: 600
+  m_Text: 'HP: 300
 
-    Atk: 75-85
+    Atk: 45-55
 
     Move: 1
 
@@ -4332,7 +4332,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 0.6
-  m_Text: 'HP: 300
+  m_Text: 'HP: 200
 
     Atk: 28-32
 
@@ -4674,9 +4674,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 0.6
-  m_Text: 'HP: 1000
+  m_Text: 'HP: 400
 
-    Atk: 120-140
+    Atk: 60-80
 
     Move: 1
 
@@ -5174,9 +5174,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 0.6
-  m_Text: 'HP: 300
+  m_Text: 'HP: 175
 
-    Atk: 45-55
+    Atk: 35-45
 
     Move: 2
 
@@ -5516,7 +5516,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1193551728}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5.000021}
+  m_LocalPosition: {x: 0, y: 0, z: -20}
   m_LocalScale: {x: 1.0004224, y: 1.0004224, z: 1.0004224}
   m_Children:
   - {fileID: 572118358}
@@ -7399,6 +7399,12 @@ MonoBehaviour:
     type: 3}
   terrain2: {fileID: 3170017251700949577, guid: 0a8dfc66fa1c5f14d9af1c5b50c932c7,
     type: 3}
+  terrain3: {fileID: 1408710064225956231, guid: 09d5ca95f4b0345478bc01536706a14d,
+    type: 3}
+  terrain4: {fileID: 4818852775687053259, guid: 7dcbf0b13eb62bf438d884591d23c2d0,
+    type: 3}
+  terrain5: {fileID: 6836400599755125192, guid: dae2250aa0a536843a5640688b516926,
+    type: 3}
   topRightImpassable: {fileID: 4011178840350674009, guid: 9c04486de9a13274b8f07b226fdd8c18,
     type: 3}
   bottomLeftMostlyAcid: {fileID: 4011178840350674009, guid: f3a55585b03a1194cb7beb6f26396003,
@@ -7424,12 +7430,6 @@ MonoBehaviour:
   bottomLeftGround: {fileID: 3082392123353144856, guid: 79fb0e0df70837e4e9efdb1e8d8a2d9e,
     type: 3}
   center: {fileID: 4011178840350674009, guid: eecb27771dc0b6146919b1e510b1dd46, type: 3}
-  terrain3: {fileID: 1408710064225956231, guid: 09d5ca95f4b0345478bc01536706a14d,
-    type: 3}
-  terrain4: {fileID: 4818852775687053259, guid: 7dcbf0b13eb62bf438d884591d23c2d0,
-    type: 3}
-  terrain5: {fileID: 6836400599755125192, guid: dae2250aa0a536843a5640688b516926,
-    type: 3}
   melee1tier1: {fileID: 6385284349475645496, guid: 11c78d75470e9b546ba8981e51440304,
     type: 3}
   melee1tier2: {fileID: 4258669875548176571, guid: d08fa5d1a81ac064e9c37972a65dad39,
@@ -8608,9 +8608,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 0.6
-  m_Text: 'HP: 500
+  m_Text: 'HP: 250
 
-    Atk: 80-100
+    Atk: 40-60
 
     Move: 3
 
