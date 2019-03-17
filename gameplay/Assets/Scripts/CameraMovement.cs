@@ -20,8 +20,7 @@ public class CameraMovement : MonoBehaviour
 
     public void Start()
     {
-        //mapheight = PlayerPrefs.GetInt("mapheight");
-        //mapwidth = PlayerPrefs.GetInt("mapwidth");
+
     }
 
     public void Update()

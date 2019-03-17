@@ -1,6 +1,6 @@
 Win64
 PlayerPath?
-C:/Users/benlo/Documents/Unity/test/craterClashGameplay.exe
+C:/Users/benlo/Documents/Unity/Windows Build/craterClashGameplay.exe
 SceneListBegin?
 Assets/CraterClash_MainMenu/Crater_Clash_MainMenu.unity
 Assets/Scenes/boardScene.unity

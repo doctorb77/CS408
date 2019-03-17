@@ -69,6 +69,7 @@ public class gameBoard : MonoBehaviour
     public AudioSource music2; //credit to Memoraphile @ You're Perfect Studio 
     public AudioSource music3; //credit to PetterTheSurgeon @ opengameart.org
 
+    //all SFX are open source and free to use without giving credit
     public AudioSource buttonClick;
     public AudioSource badButtonClick;
     public AudioSource walking;
@@ -97,7 +98,7 @@ public class gameBoard : MonoBehaviour
     public AudioSource alienDeath2;
     public AudioSource alienDeath3;
 
-    /* GAMEOBJECT VARIABLES */
+    /* GAMEOBJECT VARIABLES */ 
 
     //terrain tile game objects
     public GameObject base1;
@@ -206,10 +207,9 @@ public class gameBoard : MonoBehaviour
         highlightMapWidth = mapLength;
         highlightMapHeight = mapHeight;
 
-        //set victory to false
-        checkingVictory = true;
-        showPlayer1Victory.SetActive(false);
-        showPlayer2Victory.SetActive(false);
+        checkingVictory = true; //always check for victory until someone wins
+        showPlayer1Victory.SetActive(false); //don't show player 1 victory screen unless player 1 wins
+        showPlayer2Victory.SetActive(false); //don't show player 2 victory screen unless player 2 wins
 
         spawnMenuActive = false;
 
@@ -282,6 +282,7 @@ public class gameBoard : MonoBehaviour
         return -1;
     }
 
+    //Returns the height of the player-selected map
     public int getMapHeight(int mapID)
     {
         switch (mapID)
@@ -325,7 +326,6 @@ public class gameBoard : MonoBehaviour
                 test += x[index];
                 index++;
             }
-            //Debug.Log(test);
             test = "";
         }
         terrainTileInstanceTypes = new string[mapLength, mapHeight];
@@ -336,6 +336,7 @@ public class gameBoard : MonoBehaviour
             for (int j = 0; j < mapHeight; j++)
                 unitTileInstances[i, j] = null;
 
+        //take the map string and generate map tiles based off of it
         initializeTerrain(t, mapLength, mapHeight);
     }
 
@@ -343,6 +344,7 @@ public class gameBoard : MonoBehaviour
     {
         buttonClick.Play(0);
 
+        //get rid of any remaining movement / attack suggestion tiles
         eraseValidMoveTiles();
 
         selectedUnit = null;
@@ -355,7 +357,7 @@ public class gameBoard : MonoBehaviour
         isPlayerOneTurn = !isPlayerOneTurn;
 
         //count any resource tiles a player is on and add bonus points to that player
-        //add 1000 in funds to player at start of their turn
+        //add 1000 in funds to player at start of their turn + the resource base amounts
         if (isPlayerOneTurn)
         {
             var units = GameObject.FindGameObjectsWithTag("unit");

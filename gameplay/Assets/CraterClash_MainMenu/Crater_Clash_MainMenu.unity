@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1380584, g: 0.089846484, b: 0.19172117, a: 1}
+  m_IndirectSpecularColor: {r: 0.16232124, g: 0.1057641, b: 0.22089434, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1441,7 +1441,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -546.5, y: 371}
+  m_AnchoredPosition: {x: -605, y: 460}
   m_SizeDelta: {x: 649.5, y: 192.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &206883378
@@ -2166,8 +2166,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000061035, y: -43.25}
-  m_SizeDelta: {x: 1013.1, y: 635.8}
+  m_AnchoredPosition: {x: -0.0000038147, y: -1.9775}
+  m_SizeDelta: {x: 1037.1, y: 786.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &324145575
 MonoBehaviour:
@@ -2215,7 +2215,12 @@ MonoBehaviour:
 
     Conner Isaacs
 
-    Nada Alnoory'
+    Nada Alnoory
+
+
+    Gameplay Testers
+
+    Bill O''Malley'
 --- !u!222 &324145576
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4878,7 +4883,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 603, y: -341}
+  m_AnchoredPosition: {x: 654, y: -440}
   m_SizeDelta: {x: 379, y: 89.545}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &635942794
