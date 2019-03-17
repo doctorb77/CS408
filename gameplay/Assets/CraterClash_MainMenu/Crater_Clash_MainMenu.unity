@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.16230932, g: 0.105771385, b: 0.22087649, a: 1}
+  m_IndirectSpecularColor: {r: 0.1380584, g: 0.089846484, b: 0.19172117, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1885,7 +1885,6 @@ MonoBehaviour:
   sky_rotate_speed: 0.3
   panel_main: {fileID: 1554086388}
   panel_host: {fileID: 1859140731}
-  panel_find: {fileID: 405945790}
   panel_scores: {fileID: 714212525}
   panel_options: {fileID: 479741527}
   panel_credits: {fileID: 365521913}
@@ -1896,10 +1895,10 @@ MonoBehaviour:
   panel_curr: {fileID: 0}
   panel_host_map_size: 14000000080000000a0000000a000000
   panel_host_map_pic:
-  - {fileID: 21300000, guid: dc98d953916dedc42bd89fcfc19d2da5, type: 3}
-  - {fileID: 21300000, guid: a6c41546b7aaa3442b2dd3916e2a227c, type: 3}
-  - {fileID: 21300000, guid: c0c4581150da31144954a4145178556d, type: 3}
-  - {fileID: 21300000, guid: 4102bef44e2c69d44bc5d94ac0931c1d, type: 3}
+  - {fileID: 21300000, guid: 0029668abdda9ab43bdfcd0f6dda76dc, type: 3}
+  - {fileID: 21300000, guid: b708106cb43b6924082dae0cf2171565, type: 3}
+  - {fileID: 21300000, guid: 3299c825f2f605d44b204a492c77669c, type: 3}
+  - {fileID: 21300000, guid: 453e08e4c758d8749b58c598568d5663, type: 3}
 --- !u!114 &280689780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3023,10 +3022,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 741e199966a4055468c965a2a1f1e214, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menu: {fileID: 280689779}
-  address: {fileID: 722472164}
-  error_panel: {fileID: 1954065826}
-  error_msg: {fileID: 194597162}
 --- !u!114 &405945792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6249,7 +6244,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000010321, y: 419}
+  m_AnchoredPosition: {x: 0.000010321, y: 519}
   m_SizeDelta: {x: 649.5, y: 147.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &778976036
@@ -6489,13 +6484,13 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: a_nice_map1
+    - m_Text: Map 1
       m_Image: {fileID: 0}
-    - m_Text: a_nice_map2
+    - m_Text: Map 2
       m_Image: {fileID: 0}
-    - m_Text: a_nice_map3
+    - m_Text: Map 3
       m_Image: {fileID: 0}
-    - m_Text: a_nice_map4
+    - m_Text: Map 4
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6589,14 +6584,14 @@ RectTransform:
   m_GameObject: {fileID: 825126022}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1.3, z: 1}
   m_Children: []
   m_Father: {fileID: 991156926}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000035116, y: -25.77002}
+  m_AnchoredPosition: {x: 0.000035116, y: -6}
   m_SizeDelta: {x: 1280, y: 720}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &825126024
@@ -6634,7 +6629,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: d5be2d991300ed24c88c7958e9c9071c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3bb4592e89cbf514ca951d750074c2f9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7806,13 +7801,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonClick: {fileID: 238032422}
   tutorial_panels:
-  - {fileID: 21300000, guid: d5be2d991300ed24c88c7958e9c9071c, type: 3}
-  - {fileID: 21300000, guid: 42e8bc55c7ddd23478bb06af0944c8d4, type: 3}
-  - {fileID: 21300000, guid: 283a892fe42af2f46805f124a3043235, type: 3}
-  - {fileID: 21300000, guid: 5c3bf8f5bb0b29944812e814a815658d, type: 3}
-  - {fileID: 21300000, guid: 2333c738a9daeef45836317e18fafca2, type: 3}
+  - {fileID: 21300000, guid: 3bb4592e89cbf514ca951d750074c2f9, type: 3}
+  - {fileID: 21300000, guid: 4e64c81c0adf00d41833eacb4a1ab4bc, type: 3}
+  - {fileID: 21300000, guid: 5b5418e8265de0345836da2649651d1f, type: 3}
+  - {fileID: 21300000, guid: 0fc172088e57373459b920f34d8b2e7a, type: 3}
+  - {fileID: 21300000, guid: 04d3d056f37599040a57a45a516954d7, type: 3}
+  - {fileID: 21300000, guid: 950635c3b1d78bd4fbb35481dbf52c49, type: 3}
+  - {fileID: 21300000, guid: c300c0c4c3b44054e8d9adce5f53164f, type: 3}
   current_panel: {fileID: 825126025}
-  num_panels: 5
+  num_panels: 7
 --- !u!1 &993992913
 GameObject:
   m_ObjectHideFlags: 0
@@ -8954,7 +8951,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '"a_nice_map1"'
+  m_Text: '"Map 1"'
 --- !u!1 &1128627391
 GameObject:
   m_ObjectHideFlags: 0
@@ -12366,7 +12363,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -445.92}
+  m_AnchoredPosition: {x: 0, y: -520}
   m_SizeDelta: {x: 379, y: 89.545}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1626038954
@@ -13188,7 +13185,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: a_nice_map1
+  m_Text: Map 1
 --- !u!222 &1720523627
 CanvasRenderer:
   m_ObjectHideFlags: 0

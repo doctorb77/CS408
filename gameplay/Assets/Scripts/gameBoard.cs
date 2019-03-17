@@ -999,15 +999,15 @@ public class gameBoard : MonoBehaviour
         }
         else if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && attackingUnit.GetComponent<unit>().tier == 1 && attackingUnit.GetComponent<unit>().isPlayerOneUnit)
         {
-            astronautMeleeCombatTier1.Play(0);
+            astronautRangedCombatTier1.Play(0);
         }
         else if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && attackingUnit.GetComponent<unit>().tier == 2 && attackingUnit.GetComponent<unit>().isPlayerOneUnit)
         {
-            astronautMeleeCombatTier2.Play(0);
+            astronautRangedCombatTier2.Play(0);
         }
         else if (attackingUnit.GetComponent<unit>().typeOfUnit == "melee" && attackingUnit.GetComponent<unit>().tier == 3 && attackingUnit.GetComponent<unit>().isPlayerOneUnit)
         {
-            astronautMeleeCombatTier3.Play(0);
+            astronautRangedCombatTier3.Play(0);
         }
 
         //play attacker combat sounds if alien
@@ -1060,6 +1060,60 @@ public class gameBoard : MonoBehaviour
         bool attackingUnitWithinRange = isDefendingWithinAttacking(defendingUnit, attackingUnit);
         if (attackingUnitWithinRange)
         {
+
+            //play defender combat sounds if astronaut
+            if (defendingUnit.GetComponent<unit>().typeOfUnit == "ranged" && defendingUnit.GetComponent<unit>().tier == 1 && defendingUnit.GetComponent<unit>().isPlayerOneUnit)
+            {
+                astronautRangedCombatTier1.Play(0);
+            }
+            else if (defendingUnit.GetComponent<unit>().typeOfUnit == "ranged" && defendingUnit.GetComponent<unit>().tier == 2 && defendingUnit.GetComponent<unit>().isPlayerOneUnit)
+            {
+                astronautRangedCombatTier2.Play(0);
+            }
+            else if (defendingUnit.GetComponent<unit>().typeOfUnit == "ranged" && defendingUnit.GetComponent<unit>().tier == 3 && defendingUnit.GetComponent<unit>().isPlayerOneUnit)
+            {
+                astronautRangedCombatTier3.Play(0);
+            }
+            else if (defendingUnit.GetComponent<unit>().typeOfUnit == "melee" && defendingUnit.GetComponent<unit>().tier == 1 && defendingUnit.GetComponent<unit>().isPlayerOneUnit)
+            {
+                astronautRangedCombatTier1.Play(0);
+            }
+            else if (defendingUnit.GetComponent<unit>().typeOfUnit == "melee" && defendingUnit.GetComponent<unit>().tier == 2 && defendingUnit.GetComponent<unit>().isPlayerOneUnit)
+            {
+                astronautRangedCombatTier2.Play(0);
+            }
+            else if (defendingUnit.GetComponent<unit>().typeOfUnit == "melee" && defendingUnit.GetComponent<unit>().tier == 3 && defendingUnit.GetComponent<unit>().isPlayerOneUnit)
+            {
+                astronautRangedCombatTier3.Play(0);
+            }
+
+            //play defender combat sounds if alien
+            if (defendingUnit.GetComponent<unit>().typeOfUnit == "ranged" && defendingUnit.GetComponent<unit>().tier == 1 && !defendingUnit.GetComponent<unit>().isPlayerOneUnit)
+            {
+                alienRangedCombatTier1.Play(0);
+            }
+            else if (defendingUnit.GetComponent<unit>().typeOfUnit == "ranged" && defendingUnit.GetComponent<unit>().tier == 2 && !defendingUnit.GetComponent<unit>().isPlayerOneUnit)
+            {
+                alienRangedCombatTier2.Play(0);
+            }
+            else if (defendingUnit.GetComponent<unit>().typeOfUnit == "ranged" && defendingUnit.GetComponent<unit>().tier == 3 && !defendingUnit.GetComponent<unit>().isPlayerOneUnit)
+            {
+                alienRangedCombatTier3.Play(0);
+            }
+            else if (defendingUnit.GetComponent<unit>().typeOfUnit == "melee" && defendingUnit.GetComponent<unit>().tier == 1 && !defendingUnit.GetComponent<unit>().isPlayerOneUnit)
+            {
+                alienMeleeCombatTier1.Play(0);
+            }
+            else if (defendingUnit.GetComponent<unit>().typeOfUnit == "melee" && defendingUnit.GetComponent<unit>().tier == 2 && !defendingUnit.GetComponent<unit>().isPlayerOneUnit)
+            {
+                alienMeleeCombatTier2.Play(0);
+            }
+            else if (defendingUnit.GetComponent<unit>().typeOfUnit == "melee" && defendingUnit.GetComponent<unit>().tier == 3 && !defendingUnit.GetComponent<unit>().isPlayerOneUnit)
+            {
+                alienMeleeCombatTier3.Play(0);
+            }
+
+
             if ((attackingUnit.transform.position.y - defendingUnit.transform.position.y) >= Math.Abs(attackingUnit.transform.position.x - defendingUnit.transform.position.x))
             {
                 defendingUnit.GetComponent<Animator>().SetTrigger("combatup");
@@ -1878,19 +1932,25 @@ public class gameBoard : MonoBehaviour
                 }
                 else if (terrainInput[i, j] == "t5")
                 {
-                    GameObject terrainTile = Instantiate(terrain5) as GameObject;
-                    terrainTile.transform.position = new Vector3(i, j, -1.1f);
+                    GameObject terrainTile = Instantiate(terrain1) as GameObject;
+                    terrainTile.transform.position = new Vector3(i, j, -1);
+                    GameObject terrainTile2 = Instantiate(terrain5) as GameObject;
+                    terrainTile2.transform.position = new Vector3(i, j, -1.1f);
                 }
                 else if (terrainInput[i, j] == "b1")
                 {
-                    GameObject terrainTile = Instantiate(base1) as GameObject;
+                    GameObject terrainTile = Instantiate(terrain1) as GameObject;
                     terrainTile.transform.position = new Vector3(i, j, -1);
+                    GameObject terrainTile2 = Instantiate(base1) as GameObject;
+                    terrainTile2.transform.position = new Vector3(i, j, -1.1f);
                     baseLocation1.Set(i, j);
                 }
                 else if (terrainInput[i, j] == "b2")
                 {
-                    GameObject terrainTile = Instantiate(base2) as GameObject;
+                    GameObject terrainTile = Instantiate(terrain1) as GameObject;
                     terrainTile.transform.position = new Vector3(i, j, -1);
+                    GameObject terrainTile2 = Instantiate(base2) as GameObject;
+                    terrainTile2.transform.position = new Vector3(i, j, -1.1f);
                     baseLocation2.Set(i, j);
                 }
 

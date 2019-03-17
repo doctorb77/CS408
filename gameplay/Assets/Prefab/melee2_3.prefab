@@ -71,7 +71,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a92c9e5161c7f6b45a819b9d05a4bd0a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 09eb501a50000d74c9bb64e3174f07d0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -94,11 +94,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 756e5a5aa2d33be4aab48c6c6cc4f4fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  tier: 0
   health: 0
   maxHealth: 0
   attack: 0
   isPlayerOneUnit: 0
-  defense: 0
   typeOfUnit: 
   maxMoveDistance: 0
   unitWasMoved: 0
