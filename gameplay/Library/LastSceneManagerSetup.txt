@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/Scoreboard.unity
+- path: Assets/CraterClash_MainMenu/Crater_Clash_MainMenu.unity
   isLoaded: 1
   isActive: 1
