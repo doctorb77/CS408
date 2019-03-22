@@ -8799,7 +8799,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1579423078}
-        m_MethodName: spawnRangedUnitTierOne
+        m_MethodName: spawnMeleeUnitTierThree
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10456,7 +10456,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1579423078}
-        m_MethodName: makeExitPanelVisible
+        m_MethodName: returnToMainMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

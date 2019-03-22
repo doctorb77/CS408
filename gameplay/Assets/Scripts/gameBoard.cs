@@ -46,9 +46,9 @@ public class gameBoard : MonoBehaviour
         "t1, t4, t1, t1, t2, t2, t1, t1, t4, t1," +
         "t1, t1, t3, t1, t1, t1, t1, t3, t1, t1," +
         "b1, t1, t3, t1, t4, t4, t1, t3, t1, b2," +
-        "t1, t1, t3, t1, t5, t5, t1, t3, t1, t1," +
+        "t1, t1, t3, t1, t3, t3, t1, t3, t1, t1," +
         "t4, t1, t1, t1, t1, t1, t1, t1, t1, t4," +
-        "t1, t1, t5, t1, t2, t2, t1, t5, t1, t1," +
+        "t1, t1, t3, t1, t2, t2, t1, t3, t1, t1," +
         "t1, t1, t1, t1, t2, t2, t1, t1, t1, t1",
 
         "b1, t1, t4, t1, t5, t1, t1, t3, t1, t5," +
@@ -350,7 +350,7 @@ public class gameBoard : MonoBehaviour
         //get rid of any remaining movement / attack suggestion tiles
         eraseValidMoveTiles();
 
-        selectedUnit = null;
+        //selectedUnit = null;
 
         if (spawnMenuActive)
         {
@@ -368,7 +368,7 @@ public class gameBoard : MonoBehaviour
             {
                 if (terrainTileInstanceTypes[(int)obj.transform.position.x, (int)obj.transform.position.y] == "t5" && obj.GetComponent<unit>().isPlayerOneUnit == true)
                 {
-                    player1Funds += 500;
+                    //player1Funds += 500;
                     StartCoroutine(spawnAndMoveResourceNumber((int)obj.transform.position.x, (int)obj.transform.position.y, 500));
                 }
             }
@@ -377,7 +377,7 @@ public class gameBoard : MonoBehaviour
             showPlayer1UnitSelection.SetActive(true);
             showPlayer2UnitSelection.SetActive(false);
             player1Funds += 1000;
-            StartCoroutine(displayPlayer1Turn());
+            StartCoroutine(displayPlayer2Turn());
         }
         else
         {
@@ -386,14 +386,14 @@ public class gameBoard : MonoBehaviour
             {
                 if (terrainTileInstanceTypes[(int)obj.transform.position.x, (int)obj.transform.position.y] == "t5" && obj.GetComponent<unit>().isPlayerOneUnit == false)
                 {
-                    player2Funds += 500;
+                    //player2Funds += 500;
                     StartCoroutine(spawnAndMoveResourceNumber((int)obj.transform.position.x, (int)obj.transform.position.y, 500));
                 }
             }
 
             showPlayer2UnitSelection.SetActive(true);
             showPlayer1UnitSelection.SetActive(false);
-            player2Funds += 1000;
+            player2Funds += 2000;
             StartCoroutine(displayPlayer2Turn());
         }
 
@@ -484,7 +484,7 @@ public class gameBoard : MonoBehaviour
                     unitInstance = Instantiate(ranged1tier2) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 1.0f);
                     unitInstance.GetComponent<unit>().maxMoveDistance = 2;
-                    unitInstance.GetComponent<unit>().health = 175;
+                    unitInstance.GetComponent<unit>().health = 10;
                     unitInstance.GetComponent<unit>().maxHealth = 175;
                     unitInstance.GetComponent<unit>().attack = 40;
                     unitInstance.GetComponent<unit>().tier = 2;
@@ -567,7 +567,7 @@ public class gameBoard : MonoBehaviour
                 {
                     unitInstance = Instantiate(ranged2tier2) as GameObject;
                     unitInstance.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.0f, 1.0f);
-                    unitInstance.GetComponent<unit>().maxMoveDistance = 2;
+                    unitInstance.GetComponent<unit>().maxMoveDistance = 3;
                     unitInstance.GetComponent<unit>().health = 175;
                     unitInstance.GetComponent<unit>().maxHealth = 175;
                     unitInstance.GetComponent<unit>().attack = 40;
@@ -696,8 +696,8 @@ public class gameBoard : MonoBehaviour
                 if (currMouseX >= highlightMapWidth || currMouseY >= highlightMapHeight || currMouseX < 0 || currMouseY < 0)
                     return;
 
-                if (this.terrainTileInstanceTypes[currMouseX, currMouseY] == "t2")
-                    return;
+                //if (this.terrainTileInstanceTypes[currMouseX, currMouseY] == "t2")
+                    //return;
 
                 //if spot is empty move selected unit there
                 if (unitTileInstances[currMouseX, currMouseY] == null)
@@ -1213,10 +1213,10 @@ public class gameBoard : MonoBehaviour
             damageTaken = (int)((float)damageTaken * 1.70f);
 
         if (terrainTileInstanceTypes[(int)unit.transform.position.x, (int)unit.transform.position.y] == "t4") //units in craters take more damage
-            damageTaken = (int)((float)damageTaken * 1.40f);
+            damageTaken = (int)((float)damageTaken * 0.60f); //damageTaken = (int)((float)damageTaken * 1.40f);
         else if (terrainTileInstanceTypes[(int)unit.transform.position.x, (int)unit.transform.position.y] == "t3") //units in mountains take less damage
-            damageTaken = (int)((float)damageTaken * 0.60f);
-        
+            damageTaken = (int)((float)damageTaken * 1.40f); //damageTaken = (int)((float)damageTaken * 0.60f);
+
         unit.GetComponent<unit>().health -= damageTaken;
 
         //spawn damage amount above hurt player
