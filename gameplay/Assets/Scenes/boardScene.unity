@@ -3919,7 +3919,7 @@ MonoBehaviour:
 
     Move: 2
 
-    Cost: 1000'
+    Cost: 0'
 --- !u!222 &903576151
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4199,7 +4199,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &951688506
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4335,8 +4335,6 @@ MonoBehaviour:
   m_Text: 'HP: 200
 
     Atk: 28-32
-
-    Move: 1
 
     Cost: 1000'
 --- !u!222 &963719826

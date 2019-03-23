@@ -232,7 +232,7 @@ public class Options_Script : MonoBehaviour
                 AudioListener.volume = 1;
                 break;
             case 1: //Off
-                AudioListener.volume = 0;
+                AudioListener.volume = 1;
                 break;
             default:
                 Debug.Log("VOLUME ERROR!!!");

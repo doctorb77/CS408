@@ -141,13 +141,9 @@ public class getScores : MonoBehaviour
                 foos.RemoveAt(i);
                 words = foos.ToArray();
             }
-            if (words[i].Contains("}"))
-            {
-                words[i] = words[i].Substring(0, words[i].Length - 2);
-            }
             if (i % 2 == 0)
             {
-                people[peopleIndex].name = words[i].Split(':')[1].Split('\"')[1];
+                people[peopleIndex].name = words[i].Split(':')[0].Split('\"')[1];
             }
             else
             {
@@ -158,10 +154,6 @@ public class getScores : MonoBehaviour
                 people[peopleIndex].score = words[i].Split(':')[1].Split(' ')[1];
                 peopleIndex++;
             }
-        }
-        for (int i = 0; i < people.Length; i++)
-        {
-            people[i].rank = i + 1;
         }
     }
     public void searchButtonCLick()
@@ -235,10 +227,7 @@ public class getScores : MonoBehaviour
         clearValues();
         if (!searching)
         {
-            if (!((offset - 5) < 0))
-            {
                 offset -= 5;
-            }
             displayTenScores();
         }
         else
@@ -263,10 +252,7 @@ public class getScores : MonoBehaviour
         if (!searching)
         {
             clearValues();
-            if (!(offset + 5 > peopleIndex))
-            {
                 offset += 5;
-            }
             displayTenScores();
         }
         else

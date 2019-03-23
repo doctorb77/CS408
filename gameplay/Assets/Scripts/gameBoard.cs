@@ -50,7 +50,7 @@ public class gameBoard : MonoBehaviour
         "t4, t1, t1, t1, t1, t1, t1, t1, t1, t4," +
         "t1, t1, t3, t1, t2, t2, t1, t3, t1, t1," +
         "t1, t1, t1, t1, t2, t2, t1, t1, t1, t1",
-
+        
         "b1, t1, t4, t1, t5, t1, t1, t3, t1, t5," +
         "t1, t1, t1, t1, t1, t1, t2, t2, t2, t1," +
         "t1, t2, t2, t1, t3, t1, t2, t2, t2, t1," +
@@ -693,7 +693,7 @@ public class gameBoard : MonoBehaviour
                 int currMouseX = (int)Mathf.Round((hit.point.x));
                 int currMouseY = (int)Mathf.Round((hit.point.y));
 
-                if (currMouseX >= highlightMapWidth || currMouseY >= highlightMapHeight || currMouseX < 0 || currMouseY < 0)
+                if (currMouseX >= highlightMapWidth || currMouseY >= highlightMapHeight - 1 || currMouseX < 0 || currMouseY < 0)
                     return;
 
                 //if (this.terrainTileInstanceTypes[currMouseX, currMouseY] == "t2")
@@ -811,7 +811,7 @@ public class gameBoard : MonoBehaviour
     public void submitScore()
     {
         PlayerPrefs.SetInt("gameWasPlayed", 1);
-        if (showPlayer1Victory)
+        if (showPlayer1Victory) //showPlayer1Victory.activeInHierarchy is correct
         {
             PlayerPrefs.SetInt("score", player1Score);
         }
@@ -959,6 +959,7 @@ public class gameBoard : MonoBehaviour
 
         Vector3 desiredPosition = defendingUnit.transform.position;
         desiredPosition.z = -3.0f;
+        desiredPosition.y = desiredPosition.y + 1.0f;
 
         if (Math.Abs(desiredPosition.y - attackingUnit.transform.position.y) <= 0.01f && Math.Abs(desiredPosition.x - attackingUnit.transform.position.x) <= 0.01f)
         {
@@ -1353,7 +1354,7 @@ public class gameBoard : MonoBehaviour
         }
         if (arrived)
         {
-            Destroy(gameObjectText);
+            //Destroy(gameObjectText);
         }
     }
 
